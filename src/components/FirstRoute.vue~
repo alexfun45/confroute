@@ -1,0 +1,21 @@
+<template>
+  <div>
+    <h1>First Router</h1>
+    <div>Hello {{ $route.params.name }}</div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'FirstRoute',
+  data: function() {
+    return {
+      title: 'Hello'
+    }
+  },
+  computed: {
+    name() {
+      return this.$route.params.name;
+    },
+}
+</script>

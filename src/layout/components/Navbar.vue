@@ -1,0 +1,76 @@
+<template>
+  <div class="navbar">
+  	<el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+        <div class="avatar-wrapper">
+          <el-avatar :size="size" :src="avatarSrc" fit="contain"></el-avatar>
+          <i class="el-icon-caret-bottom" />
+        </div>
+        <el-dropdown-menu slot="dropdown">
+          <router-link to="/profile/index">
+            <el-dropdown-item>Профиль</el-dropdown-item>
+          </router-link>
+          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
+            <el-dropdown-item>Настройки</el-dropdown-item>
+          </a>
+          <el-dropdown-item divided @click.native="logout">
+            <span style="display:block;">Выход</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
+ </template>
+ <script>
+ 
+ export default {
+  data: function(){
+	return {
+		avatar: '',
+		size: 40,
+		avatarSrc: './dist/assets/profile_logo.jpg',
+		circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",	
+	}  
+  },
+  methods: {
+    toggleSideBar() {
+      this.$store.dispatch('app/toggleSideBar')
+    },
+    async logout() {
+      await this.$store.dispatch('logout')
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+.navbar {
+  height: 50px;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  }
+   .avatar-container {
+      margin-right: 30px;
+
+      .avatar-wrapper {
+        margin-top: 5px;
+        position: relative;
+
+        .user-avatar {
+          cursor: pointer;
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+        }
+
+        .el-icon-caret-bottom {
+          cursor: pointer;
+          position: absolute;
+          right: -20px;
+          top: 25px;
+          font-size: 12px;
+        }
+      }
+  }
+
+</style>

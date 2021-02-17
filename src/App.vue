@@ -1,0 +1,20 @@
+<template>
+	<div id="app">
+		<router-view />
+	 </div>
+	 
+</template>
+
+<script>
+import Vue from 'vue'
+import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
+import router from './router'
+Vue.use(router)
+//import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+import './styles/layout.scss'
+export default {
+  name: 'App',
+  router
+}
+</script>

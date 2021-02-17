@@ -1,0 +1,26 @@
+<template>
+  <div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'FastSetup',
+  props: {
+	name: {
+		type: String,
+		default: '0'	
+	}  
+  },
+  data: function() {
+    return {
+      title: 'Hello'
+    }
+  },
+  computed: {
+    //name() {
+     // return this.$route.params.name;
+    	//}
+	}
+}
+</script>

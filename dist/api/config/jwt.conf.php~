@@ -1,0 +1,9 @@
+<?php
+global $jwt;
+$jwt['key'] = "g3fg3rg2fr3g3";
+$jwt['refreshKey'] = "f24fg32312f";
+$jwt['iss'] = "http://any-site.org";
+$jwt['aud'] = "http://any-site.com";
+$jwt['iat'] = 1356999524;
+$jwt['nbf'] = 1357000000;
+?>

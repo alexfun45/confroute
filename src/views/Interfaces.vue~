@@ -1,0 +1,28 @@
+<template>
+  <div>
+    
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Page',
+  data: function() {
+    return {
+      title: 'Hello'
+    }
+  },
+  created: function(){
+		this.showInterfaces();  
+  },
+  
+  watch:{
+	$route: "showInterfaces"  
+  },
+  methods:{
+		showInterfaces(){
+			this.$http.post("./dist/api/api.php", JSON.stringify({ path: this.$parent.path, action: "getInterfaces" }));		
+		}  
+  }
+}
+</script>

@@ -1,0 +1,67 @@
+<?php
+	include_once LIB."tokenHandler.php";
+	
+	class Application{
+		
+		var $path = null;
+		var $action = '';
+		var $modName = '';
+		var $data;	
+		
+		private function getTokenFromHeaders(){
+			$headers = getallheaders();
+			return $headers["X-Token"];		
+		}	
+		
+		private function verify_token(){
+			if(($this->action=="login" || $this->action=="refreshToken"))
+				return true;
+			$token = $this->getTokenFromHeaders();
+			//if($token=="" || !$token)
+				//return false;
+			if(tokenHandler::verify_token($token))
+				return true;
+			else
+				return false;		
+		}		
+		
+		private function getRequestData(){
+			$reqBody = file_get_contents("php://input");
+			$reqData = json_decode($reqBody);
+			$this->action = $reqData->action;
+			$this->path = $reqData->path;
+			// verify token before something doing
+			//if(($this->action!="login" && $this->action!="refreshToken"))
+				//$this->data->tokenData = $this->verify_token();
+			
+			if(array_key_exists("data", $reqData))
+				$this->data = $reqData->data;
+			$this->data->login = $reqData->login;
+			$this->data->password = $reqData->password;
+			$this->modName = array_pop(explode("/", $this->path));
+		}		
+		
+		public function run(){
+			$this->getRequestData();
+			echo json_encode(array("data"=>$this->data->password, "code"=>tokenHandler::$code));	
+			return true;
+			if($this->verify_token()===false){
+				return false;
+			}
+			$module = new $this->modName($this->action, $this->path);
+			$res = $module->action($this->data);
+			echo json_encode(array("data"=>$res, "code"=>tokenHandler::$code));	
+		}	
+		
+		public static function autoload($className){
+			 $_lastLoadedFilename = "./modules/" . $className . ".php";
+			 //echo $_lastLoadedFilename."<br>";
+			 if(file_exists($_lastLoadedFilename))
+        	 	require_once($_lastLoadedFilename);
+        	 else
+        	 	return false;	
+			}			
+	}
+	
+	spl_autoload_register(array('Application', 'autoload'));	
+?>

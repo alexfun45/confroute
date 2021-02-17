@@ -1,0 +1,76 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+import Layout from '@/layout'
+import Login from './views/Auth/login'
+import store from './store'
+
+Vue.use(Router)
+console.log(store.getters.token);
+let router = new Router({
+	routes : [
+		{
+	      path: '/',
+	      component: Layout,
+	      redirect: '/Network/Interfaces',
+	      children:[
+	      	{
+	      		path: "/Network/Interfaces",
+	      		component: () => import('@/views/Interfaces/index.vue'),
+	      		name: "Interfaces",
+	      		meta: {title: 'Интерфейсы', requiresAuth: true}
+	      	}
+	      ]
+	    },
+     {
+      path: '/Network/FastSetup',
+      component: Layout,
+      props: true,
+      children:[
+      	{
+      		path: "/Network/FastSetup",
+      		component: () => import('@/views/FastSetup'),
+      		name: "FastSetup",
+      		meta: {title: 'Быстрая Утановка', requiresAuth: true}
+      	}
+      ]
+    },
+	 { 
+	 	path: '/login', 
+	 	component: Login }    
+    ]
+ });
+if(!store.getters.isLoggedIn) 
+
+
+router.beforeEach((to, from, next) => {
+	if(to.matched.some(record => record.meta.requiresAuth)) {
+		if (store.getters.isLoggedIn) {
+			 //console.log("tokens="+store.getters.isLoggedIn);
+			 next()
+      	 return
+		}
+		next('/login') 
+	}
+	else{
+	next()	
+	}
+		
+	});
+
+
+/*router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth)) {
+    if(store.getters.isLoggedIn) 
+    	next()
+    else{
+    	return store.getters.isRefreshToken.then(response=> { console.log("response="+response); //if(response.data) next(); 
+    	});
+      return
+   }
+    next('/login') 
+  } else {
+    next() 
+  }
+})*/
+
+export default router;

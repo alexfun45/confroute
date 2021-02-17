@@ -1,0 +1,41 @@
+@import "~font-awesome/css/font-awesome.css";
+@import "~vue-sidebar-menu/src/scss/vue-sidebar-menu.scss";
+
+#app{
+	height: 100%;
+}
+
+.v-sidebar-menu .vsm--toggle-btn::after{
+	content: "\f03b";
+	font: normal normal normal 14px/1 FontAwesome;
+}
+
+.v-sidebar-menu .vsm--arrow::after{
+	content: "\f053";
+	font: normal normal normal 14px/1 FontAwesome;
+}
+   
+.vsm--list{
+		padding-left: 20px !important;
+}
+
+.vsm--scroll-wrapper > .vsm--list:first-child{
+	padding-left: 0px !important;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}

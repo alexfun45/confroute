@@ -1,0 +1,28 @@
+<template>
+  <div>
+    <h1>FastSetup Page</h1>
+    <div></div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'routePage',
+  props: {
+	name: {
+		type: String,
+		default: '0'	
+	}  
+  },
+  data: function() {
+    return {
+      title: 'Hello'
+    }
+  },
+  computed: {
+    //name() {
+     // return this.$route.params.name;
+    	//}
+	}
+}
+</script>

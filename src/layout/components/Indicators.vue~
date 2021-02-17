@@ -1,0 +1,92 @@
+<template>
+  <div class="indicators">
+  		<div class='placeInd'>
+  			<div v-for="Indicator in Indicators" class="indicator" :class="getIndicatorClass(Indicator)"></div>
+  		</div>	
+   </div>
+ </template>
+ <script>
+ import request from '@/utils/request'
+ export default {
+  name: 'indicators',
+  data: function(){
+	return {	
+		Indicators: [0, 0, 0, 0, 0, 0],
+		req: {
+			action: "getIndicators",
+			path: "/Network/Interfaces"
+			}
+	}  
+  },
+  created(){
+  	  this.getNewState();
+	  this.timer = setInterval(this.getNewState, 5000);
+  },
+  
+  methods: {
+    getIndicatorClass(i) {
+      return "ind"+i;
+    },
+    getNewState(){
+    		let comp = this;
+			request({method: 'post', data: this.req}).then(response => { const {data} = response; comp.Indicators = data; });  
+    },
+    stopTimer() {
+      clearTimeout(this.timer)
+    },
+  }
+}
+</script>
+<style lang="scss" scoped>
+.navbar {
+  height: 50px;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  }
+   .avatar-container {
+      margin-right: 30px;
+
+      .avatar-wrapper {
+        margin-top: 5px;
+        position: relative;
+
+        .user-avatar {
+          cursor: pointer;
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+        }
+
+        .el-icon-caret-bottom {
+          cursor: pointer;
+          position: absolute;
+          right: -20px;
+          top: 25px;
+          font-size: 12px;
+        }
+      }
+  }
+.indicator{
+	width: 28px;
+	height: 28px;
+	display: inline-block;
+	margin-left: 5px;
+	border: 1px solid #000;
+}
+.placeInd{
+	padding: 12px 15px;
+	background-color: #a6a6a6;
+	display: inline-block;
+}
+.ind0{
+	background-color: red;
+}
+.ind1{
+	background-color: green;
+}
+.ind2{
+	background-color: black;
+}
+</style>

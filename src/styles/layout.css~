@@ -1,0 +1,19 @@
+@import "~font-awesome/css/font-awesome.css";
+
+@import "~vue-sidebar-menu/src/scss/vue-sidebar-menu.scss";
+
+.v-sidebar-menu .vsm--toggle-btn::after{
+	content: "\f03b";
+	font: normal normal normal 14px/1 FontAwesome;
+}
+
+/*.vsm--link_level-2{
+		padding-left: 30px !important;   
+   }
+   */
+   
+.vsm--list{
+	@if & {
+	padding-left: 15px;
+}
+}

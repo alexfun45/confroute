@@ -1,0 +1,174 @@
+<template>
+	<div :id="__idinput" class='IpInput'>
+		<template v-for="i in segments">
+			<span class='ipsegment'><input v-on:input="inputIp" :disabled="!disabled" :key="i" :num="i" :id="'ipInput_'+__idinput+'_'+i" v-on:keydown="testChar" v-on:keyup="isEnd" v-bind:maxlength="segmentMaxSize" :placeholder="disabled?placeholder_segments[i-1]:''" v-model="ipsegments[i-1]" type='text'></span><span class='ipseparator' v-if="(separator && i<segments)">-</span>		
+		</template>	
+	</div>
+</template>
+<script>
+	export default{
+		name: "ip-input",
+		props:{
+			value: {
+				type: String			
+			},
+			ip: {
+				type: String,
+				default: ""			
+			},
+			disabled:{
+				type: Boolean,
+				default: false			
+			},
+			separator: {
+				type: Boolean,
+				default: false			
+			},
+			allowedregexp:{
+				type: String,
+				default: "\\d"			
+			},
+			port: {
+				type: String,
+				default: ""			
+			},
+			outline: {
+				type: String,
+				default: "around",
+				validator: function(value){
+                return (value=="around" || value=="bottom" || value=="onsides");
+                }			
+			},
+			borderColor: {
+				type: String,
+				default: "#727378"			
+			},
+			fontSize: {
+				type: Number,
+				default: 12			
+			},
+			textColor:{
+				type: String,
+				default: "#000"		
+			},
+			maxNumber: {
+				type: Number,
+				default: 255			
+			},
+			segments:{
+				type: Number,
+				default: 4,
+				validator: function(value){
+                return (value<20	);
+                }			
+			},
+			segmentMaxSize: {
+				type: Number,
+				default: 4,
+				validator: function(value){
+                return (value<10	);
+                }			
+			}		
+		},
+		data(){
+			return {
+				__ip: '',
+				__port: '',
+				__idinput: 0,
+				ipsegments: [],
+				allowedSymbols: '',
+				placeholder_segments: [],		
+			} 		
+		},
+		created() {
+			this.__ip = this.$parent._data.ip || this.ip;
+			this.__port = this.$parent.port || this.port;
+			this.allowedSymbols = new RegExp(""+this.allowedregexp);
+			this.placeholder_segments = this.__ip.split(".");
+			this.__idinput = (new Date()).getTime()+Math.floor(Math.random()*1000);
+			this.ipsegments = this.value.split(".");
+		},
+		methods: {
+			inputIp(){
+				let fullIP = this.ipsegments.join(".");
+				this.$emit('input', fullIP);
+				this.value = fullIP;		
+			},
+			isEnd(event){
+				let __char = event.currentTarget.value;
+				if(__char.length==this.segmentMaxSize || event.keyCode==9){
+					let num = parseInt(event.currentTarget.getAttribute("num"));
+					if((num+1)<=this.segments){
+						//let nextIpInputId = "ipInput"+(num+1);
+						let next = document.getElementById('ipInput_'+this.__idinput+"_"+(num+1));
+						//next = next.getElementById(nextIpInputId);
+						next.focus();			
+					}	
+				}				
+			},
+			testChar(event){
+				let __num = parseInt(event.currentTarget.value);
+				if(__num>=this.maxNumber && event.keyCode!=8 && event.keyCode!=46 && event.keyCode!=37){
+					event.preventDefault();
+					}
+				let e = new RegExp("/[0-9]/");
+				if( (!this.allowedSymbols.test(event.key) && event.keyCode!=8 && event.keyCode!=46 && event.keyCode!=37)){
+					event.preventDefault();
+					return false;
+					}
+				this.testDel(event, event.currentTarget);
+			},
+			testDel(e, el){
+				if(e.keyCode==8){
+					let pos = 0;
+					if (document.selection) {
+						let range = document.selection.createRange();
+						let rangelen = range.text.length;
+	        			range.moveStart('character', -el.value.length);
+	        			pos = range.text.length - rangelen;
+	        		}
+	        		else if(el.selectionStart || el.selectionStart == '0') {
+						pos = el.selectionStart;	        		
+	        		}
+	        		else
+	        			pos = 0;
+        			if(pos==0){
+						let num = parseInt(e.currentTarget.getAttribute("num"));
+						if((num-1)>0){
+							let prev = document.getElementById('ipInput_'+this.__idinput+"_"+(num-1));
+							prev.focus();									
+						}        			
+        			}	
+        		}
+			}	
+		}	
+	}
+</script>
+<style scoped>
+	.IpInput{
+		display: inline-block;	
+	}
+	.IpInput .ipsegment{
+		display: inline-block;
+		width: 45px;
+		height: 24px;
+		padding: 2px;
+		border:1px solid #000;	
+	}
+	.IpInput .ipsegment input{
+		width: 100%;
+		height: 100%;
+		font-size: 14px;
+		font-weight: 500;	
+		border: none;
+		outline: none;
+		background-color: transparent;
+	}
+	.IpInput .ipsegment input:disabled{
+		font-weight: 400;
+		color: #333;	
+	}
+	.IpInput .ipseparator{
+		margin: 0px 2px;	
+	}
+</style>

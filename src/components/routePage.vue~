@@ -1,0 +1,28 @@
+<template>
+  <div>
+    <h1>Route Page</h1>
+    <div>parameter: {{ name }}</div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'routePage',
+  props: {
+	name: {
+		type: String,
+			
+	}  
+  },
+  data: function() {
+    return {
+      title: 'Hello'
+    }
+  },
+  computed: {
+    //name() {
+     // return this.$route.params.name;
+    	//}
+	}
+}
+</script>
