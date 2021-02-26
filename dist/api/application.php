@@ -35,8 +35,8 @@
 			if(!isset($reqData->action) || !isset($reqData->path))
 				return false;
 			
-			//if(!Validator::valid($reqData))
-				//return false;
+			if(!Validator::valid($reqData))
+				return false;
 			//echo $reqData->path;
 			//Validator::cleanAll($reqData);
 			if(array_key_exists("data", $reqData))
@@ -57,7 +57,8 @@
 			//echo $this->action;
 			$module = new $this->modName($this->action, $this->path);
 			$res = $module->action($this->data);
-			echo json_encode(array("data"=>$res, "code"=>tokenHandler::$code));	
+			//$res["code"] = tokenHandler::$code;
+			echo json_encode(array("data"=>$res, "reqInfo"=>tokenHandler::getRequestInfo()));	
 		}	
 		
 		public static function autoload($className){
