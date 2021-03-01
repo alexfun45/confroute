@@ -17,13 +17,13 @@
 		
 		public static function cleanAll($values){
 			foreach ($values as $property => $argument) {
-             $values->{$property} = Validator::clean($argument);
+             $values->{$property} = Validator::clean($values->{$property});
            }		
 		}
 		
 		public static function valid($values){
 			foreach($values as $value){
-				if(!Validator::check_length($value, 1, 256))
+				if(!Validator::check_length($value, 0, 50000))
 					return false;			
 			}	
 			return true;	

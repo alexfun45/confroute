@@ -17,7 +17,7 @@ let router = new Router({
 	      		path: "/Network/Interfaces",
 	      		component: () => import('@/views/Interfaces/index.vue'),
 	      		name: "Interfaces",
-	      		meta: {title: 'Интерфейсы', requiresAuth: true}
+	      		meta: {title: 'Interfaces', requiresAuth: true}
 	      	}
 	      ]
 	    },
@@ -30,7 +30,7 @@ let router = new Router({
       		path: "/Network/FastSetup",
       		component: () => import('@/views/FastSetup'),
       		name: "FastSetup",
-      		meta: {title: 'Быстрая Утановка', requiresAuth: true}
+      		meta: {title: 'FastSetup', requiresAuth: true}
       	}
       ]
     },

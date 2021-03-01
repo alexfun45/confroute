@@ -5,15 +5,63 @@
 	height: 100%;
 }
 
+.main-container{
+	position: relative;
+	margin-top: 4px;
+}
+
+.top-panel{
+	display: inline-block;
+	line-height: 80px;
+	vertical-align: middle;
+	height: 100px;
+}
+
+
+.indicators{
+	vertical-align: middle;
+}
+
+.fileinput {
+  		display: none;
+	}
+	
+.logoblock{
+	padding: 25px;
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+}
+
+.v-sidebar-menu{
+	position: absolute;
+	top: 0;
+	laft: 0;
+	background-color: #4f5a6e;
+}
+
 .v-sidebar-menu .vsm--toggle-btn::after{
 	content: "\f03b";
 	font: normal normal normal 14px/1 FontAwesome;
+}
+
+.vsm--item{
+	padding: 2px 15px;
 }
 
 .v-sidebar-menu .vsm--arrow::after{
 	content: "\f053";
 	font: normal normal normal 14px/1 FontAwesome;
 }
+
+.v-sidebar-menu .vsm--link{
+	color: #8893aa;  
+	font-size: 22px !important;
+  }
+  
+ .router-link-active{
+	color: #FFF !important; 
+ }
    
 .vsm--list{
 		padding-left: 20px !important;

@@ -9,7 +9,7 @@
           <router-link to="/profile/index">
             <el-dropdown-item>Профиль</el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
+          <a target="_blank">
             <el-dropdown-item>Настройки</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
@@ -17,6 +17,7 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      <div class='login-title'>{{login}}</div>
     </div>
  </template>
  <script>
@@ -25,10 +26,15 @@
   data: function(){
 	return {
 		avatar: '',
+		login: '',
 		size: 40,
 		avatarSrc: './dist/assets/profile_logo.jpg',
 		circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",	
 	}  
+  },
+  created(){
+		this.login = this.$store.getters.login;
+		console.log(this.login);  
   },
   methods: {
     toggleSideBar() {
@@ -43,10 +49,13 @@
 </script>
 <style lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 70px;
+  cursor: pointer;
   overflow: hidden;
-  position: relative;
-  background: #fff;
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  background: transparent;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
   }
    .avatar-container {
@@ -72,5 +81,9 @@
         }
       }
   }
-
+  
+  .login-title{
+		color: #FFF;
+		font-size: 16px;  
+  }
 </style>

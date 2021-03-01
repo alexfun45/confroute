@@ -33,10 +33,11 @@
 				tokenHandler::setNewRefreshToken($jwt);
 				//$id = tokenHandler::verify_token($jwt);
 				//http_response_code(200);
+				tokenHandler::setCode(500);
 			   return array(
 			            "message" => "Успешный вход в систему",
 			            "jwt" => $jwt,
-			            //"pass" => hash("sha256", $password . $this->_salt),
+			            "login"=>$login,
 			            "code"=>200,
 			            "id"=>$id );	
 			}

@@ -5,11 +5,14 @@
 	include_once LIB.'SignatureInvalidException.php';
 	include_once LIB.'JWT.php';
 	use \Firebase\JWT\JWT;
+	include_once LIB."user.php";
 	global $confjwt;
 	
 	class tokenHandler{
 		
 		public static $code = 200;
+		public static $info = '';
+		public static $jwt = false;
 		public static function generate_string($strength = 10) {
 			 $input = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		    $input_length = strlen($input);
@@ -30,7 +33,79 @@
 			self::$code = $code;		
 		}
 		
+		public static function getRequestInfo(){
+			if(self::$jwt!==false)
+				self::$info->token = self::$jwt;
+			self::$info->code = self::$code;
+			return self::$info;		
+		}
+		
 		public static function verify_token($token){
+			global $confjwt;
+			try {
+				$decoded = JWT::decode($token, $confjwt['key'], array('HS256'));
+				if(isset($_COOKIE["refreshToken"])){
+					if($decoded->exp<time() ){
+						$newjwt = tokenHandler::refreshToken($decoded);
+						if(!$newjwt){
+							self::$info = array(
+			            "message" => "Токен просрочен и не может быть продлен",
+			            "data"=>$decoded->exp,
+			            "error"=>true,
+			            "code" => 50001
+			        		);
+							return false;						
+							}
+						 else{
+						 	tokenHandler::setCode(500);
+						 	return true;
+						 	}			
+						}
+					if($decoded->exp>time())
+						return true;
+					else{
+					  self::$info = array(
+		            "message" => "Токен просрочен или неверен",
+		            "data"=>$decoded->exp,
+		            "current_time"=>time(),
+		            "error"=>true,
+		            "code" => 50001
+		        		);
+		        		return false;							
+					}				
+				}
+				else{
+					 tokenHandler::setCode(50008);
+					 //http_response_code(50008);
+					 self::$info = array(
+		            "message" => "Отсутствует токен обновления",
+		            "code" => 50002
+		        );					
+				}
+				return $decoded->data->id; 
+				}
+			 catch (Exception $e){
+				 
+				 if($e->getMessage()=="Expired token"){
+					$newjwt = tokenHandler::refreshToken($decoded);
+					tokenHandler::setCode(201);				       
+			      if($newjwt===false){ 
+			        self::$info = array(
+			            "message" => "токен не верен",
+			            "error" => $e->getMessage(),
+			            "code"=> 50003
+			        );
+			        return false;
+			        }
+			        else{
+			        	self::$jwt = $newjwt;
+			        	return true;
+			        	}
+		         }
+		   	 }	
+		}
+		
+		/*public static function verify_token($token){
 			global $confjwt;
 			try {
 				$decoded = JWT::decode($token, $confjwt['key'], array('HS256'));
@@ -42,14 +117,15 @@
 							echo json_encode(array(
 			            "message" => "Токен просрочен и не может быть продлен",
 			            "data"=>$decoded->exp,
-			            "current_time"=>time(),
 			            "error"=>true,
 			            "code" => 50001
 			        		));
 							return false;						
 							}
-						 else
-						 	return tokenHandler::setCode(500);				
+						 else{
+						 	tokenHandler::setCode(500);
+						 	return true;
+						 	}			
 						}
 					if($decoded->exp>time())
 						return true;
@@ -65,6 +141,7 @@
 					}				
 				}
 				else{
+					 tokenHandler::setCode(50008);
 					 //http_response_code(50008);
 					 echo json_encode(array(
 		            "message" => "Отсутствует токен обновления",
@@ -74,23 +151,32 @@
 				return $decoded->data->id; 
 				}
 			 catch (Exception $e){
-		        // код ответа
-		        //http_response_code(401);
-		        // сообщить пользователю отказано в доступе и показать сообщение об ошибке
-		        echo json_encode(array(
-		            "message" => "токен не верен",
-		            "error" => $e->getMessage(),
-		            "code"=> 50003
-		        ));
-		        return false;
+				 
+				 if($e->getMessage()=="Expired token"){
+					$newjwt = tokenHandler::refreshToken($decoded);
+					tokenHandler::setCode(201);				       
+			      if($newjwt===false){ 
+			        echo json_encode(array(
+			            "message" => "токен не верен",
+			            "error" => $e->getMessage(),
+			            "code"=> 50003
+			        ));
+			        return false;
+			        }
+			        else{
+			        	self::$jwt = $newjwt;
+			        	return true;
+			        	}
+		         }
 		   	 }					
 		}
+		*/
 		
 		public static function refreshToken($token){
 			if(isset($_COOKIE["refreshToken"])){
 				$refreshToken = $_COOKIE["refreshToken"];
-				$user = new User($token->id); 
-				if($user->getUserDataByIndex($userId)!==false){
+				$user = new User(); 
+				if($user->getUserDataByIndex($token->id)!==false){
 					$jwt = tokenHandler::getJWT($user);
 					return $jwt;
 					}								

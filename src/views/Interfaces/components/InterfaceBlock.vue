@@ -1,11 +1,11 @@
 <template>
-		<div class="InterfaceBlock" v-loading="loading" element-loading-text="Loading..." element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
+		<div class="InterfaceBlock" :style="{backgroundColor : bgColor}" v-loading="loading" element-loading-text="Loading..." element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
 			<div class="collapsedTitle" :class="{collapsed: isCollapse}"><i style="margin-right: 4px;" class="fa fa-server"></i>{{getLanName(iName)}}</div>
 			<span v-on:click="collapseBlock" class=" fa" :class="{'fa fa-caret-down': !isCollapse, block_dropper: true, block_dropper: true, 'fa fa-caret-left': isCollapse}"></span>
 				<div :class="{'interface-block-wrapper': true, collapse: isCollapse}">
 					<div class="sectionBlock">
 						<p class="section-line">
-							<select v-model="interfaceIndx" :value="interfaceIndx" v-on:change="changeIndex(indx, $event)" class="shortList" id="InterfacesLan"><option :value="indx" v-for="(data, indx) in allInterfaces">{{getLanName(data.name)}}</option></select> <select v-model="protocolType" :disabled="!editMode" class="shortList" id="InterfacesProtocol"><option value="WAN">WAN</option><option value="Local">Local</option></select>				
+							<select v-model="interfaceIndx" v-on:change="changeIndex(indx, $event)" class="shortList" id="InterfacesLan"><option :value="n" v-for="n in maxInterfaces">{{("LAN"+n)}}</option></select> <select v-model="protocolType" :disabled="!editMode" class="shortList" id="InterfacesProtocol"><option value="WAN">WAN</option><option value="Local">Local</option></select>				
 						</p>
 						<p class="section-line"><label class="itemLabel">Protocol:</label><select v-model="protocol" :disabled="!editMode"><option :value="protocol.val" v-for="protocol in protocols">{{protocol.title}}</option></select>
 						</p>
@@ -15,8 +15,8 @@
 							<table class="iptab">
 								<tr><td><label class="itemLabel">IPv4 address</label></td><td><ip-input v-model="ipv4addr" :disabled="editMode" :ip='ipv4addr_placeholder' :segments=4 :segmentMaxSize=3></ip-input></td></tr>
 								<tr><td><label class="itemLabel">IPv4 netmask</label></td><td><ip-input v-model="ipvnetmask" :disabled="editMode" :ip="ipvnetmask_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
-								<tr><td><label class="itemLabel">IPv4 gateway</label></td><td><ip-input v-model="ipv4gateway" :disabled="editMode" :ip="ipv4gateway_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
-								<tr><td><label class="itemLabel">Resolv</label></td><td><ip-input v-model="resolv" :disabled="editMode" :segments=4 :segmentMaxSize=3></ip-input></td></tr>				
+								<tr v-if="protocolType=='WAN'"><td><label class="itemLabel">IPv4 gateway</label></td><td><ip-input v-model="ipv4gateway" :disabled="editMode" :ip="ipv4gateway_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
+								<tr v-if="protocolType=='WAN'"><td><label class="itemLabel">Resolv</label></td><td><ip-input v-model="resolv" :disabled="editMode" :segments=4 :segmentMaxSize=3></ip-input></td></tr>				
 						</table>				
 						</div>
 						<div class="flex-item">
@@ -37,6 +37,7 @@ export default{
 	name: "InterfaceBlock",
 	data: function() {
 		return {
+			maxInterfaces: parseInt(this.$store.getters.getMaxInterfaces),
 			ipv4addr_placeholder: "127.0.0.1",
          ipv4addr: this.iData.IPv4address || "",
          ipvnetmask: this.iData.IPv4netmask || "",
@@ -58,7 +59,12 @@ export default{
 			editMode: false,
 			editDialogVisible: false,
 			own: '',
-			changeNum: 0	
+			changeNum: 0,
+			bgColors: {
+			"WAN": "#d9b9fa",
+			"Local": "#93f3fa",
+			__isCollapse: true     
+      	}	
 		}	
 	},
 	//props: ["iData", "iName", "allInterfaces", "isCollapsed", "indx"],
@@ -92,22 +98,33 @@ export default{
 	},
 	created(){
 		this.interfaceIndx = this.indx;
+		this.__isCollapse = this.isCollapsed;
+		//console.log("indx="+this.indx);
 		
 	},
 	mounted(){
 		this.interfacePort = this.iName;
+		console.log("port="+this.iName+" start index="+this.interfaceIndx);
 		//this.interfaceIndx = this.indx; 
 	},
 	watch:{
 		interfaceIndx: function(val, oldVal){
+			//console.log("interfaces="+val+" "+oldVal);
 			//if(this.changeNum>0){
 				//console.log("change");
+			//if(!this.editMode)
 				//this.$bus.$emit("changeInterface", {newInterface: val, oldInterface: oldVal});
 				//}
 			//this.changeNum++;	
 		}	
 	},
 	computed: {
+		//maxInterfaces(){
+			//return this.$store.getters.getMaxInterfaces;
+		//},
+		bgColor: function(){
+			return this.bgColors[this.protocolType];		
+		},
 		isCollapse: function(){
 			return this.isCollapsed;		
 		},
@@ -120,7 +137,15 @@ export default{
 	},
 	methods:{
 		changeIndex(item, event){
-			this.$bus.$emit("changeInterface", {newInterface: event.target.value, oldInterface: item});
+			console.log(this.InterfaceIndx);
+			//this.interfaceIndx = item;
+			//console.log("ints= "+item+" "+this.interfaceIndx);
+			let old = "lan"+item+".ini";
+			this.interfacePort = "lan"+event.target.value+".ini";
+			//if(!this.editMode)
+			//this.interfaceIndx = item;
+			this.$bus.$emit("changeInterface", {newInterface: item-1, oldInterface: this.interfaceIndx-1});
+			
 			//console.log("change index "+item+" "+event.target.value);		
 		},
 		toggleEdit(){
@@ -214,12 +239,13 @@ export default{
 		width: 80% !important;
 		position: relative;
 		margin-bottom: 20px;
+		border:2px solid #24bfb5;
 	}
 	.shortList{
 		min-width: 100px;	
 	}
 	.sectionBlock{
-		border-bottom: 2px solid #4393cc;	
+		border-bottom: 2px solid #24bfb5;	
 	}
 	.section-line{
 		display: inline-block;

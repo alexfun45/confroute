@@ -40,6 +40,7 @@
 }
 </script>
 <style lang="scss" scoped>
+
 .navbar {
   height: 50px;
   overflow: hidden;
@@ -71,15 +72,14 @@
       }
   }
 .indicator{
-	width: 28px;
-	height: 28px;
+	width: 32px;
+	height: 32px;
 	display: inline-block;
 	margin-left: 5px;
 	border: 1px solid #000;
 }
 .placeInd{
-	padding: 12px 15px;
-	background-color: #a6a6a6;
+	padding: 3px 5px;
 	display: inline-block;
 }
 .ind0{

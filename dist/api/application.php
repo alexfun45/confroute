@@ -52,6 +52,7 @@
 				return false;
 
 			if($this->verify_token()===false){
+				echo json_encode(array("data"=>"", "reqInfo"=>tokenHandler::getRequestInfo()));
 				return false;
 			}
 			//echo $this->action;

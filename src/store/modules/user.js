@@ -7,7 +7,8 @@ const LOGOUT = "LOGOUT";
 const state = {
 	isLoggedIn: !!localStorage.getItem("token"),
 	token: localStorage.getItem("token"),
-	avatar: ''
+	avatar: '',
+	login: localStorage.getItem("login"),
 }
 
 const mutations = {
@@ -28,10 +29,17 @@ const mutations = {
 	    state.status = ''
 	    state.token = ''
 	    localStorage.removeItem('token')
+	    localStorage.removeItem('login')
 	  },
 	  SET_TOKEN: (state, token) => {
+	  	//console.log("set new token "+token);
     	state.token = token
     	localStorage.setItem("token", token);
+  	},
+  	SET_LOGIN: (state, login) => {
+  		console.log("set login "+login);
+  		localStorage.setItem("login", login);
+		state.login = login;  	
   	},
   	  REMOVE_TOKEN(state){
 		 state.status = ''
@@ -59,15 +67,18 @@ const actions = {
 	    })
 	  })
 	 },
+	 
 	 login({commit}, user){
 	      return new Promise((resolve, reject) => {
 		      commit('auth_request')
 		      request({method: 'post', data: user})
 		      	.then(response => {
 			        const {data} = response
-			        console.log(data);
-			        console.log("set token = "+data.jwt);
+			        //console.log("login")
+			        console.log("login="+data.login);
+			        //console.log("set token = "+data.jwt);
 			        commit('SET_TOKEN', data.jwt)
+			        commit('SET_LOGIN', data.login)
 			        //setToken(data.jwt)
 			        resolve()
 		   	}).catch(error => {
@@ -117,6 +128,7 @@ const getters = {
   authStatus: state => state.status,
   token: state => state.token,
   avatar: state => state.avatar,
+  login: state => { console.log("call getter login with login = "+state.login); return state.login }
 }
 
 export default {

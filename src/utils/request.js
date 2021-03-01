@@ -31,16 +31,21 @@ service.interceptors.request.use(
 service.interceptors.response.use(
 	response => {
     const res = response.data;
+    const info = res.reqInfo;
     //console.log(response);
     // if token refresh
-    if(res.code==5000){
+    //console.log(info);
+    if(info.code==201){
+		store.commit("SET_TOKEN", info.token);    
+    }
+    if(info.code==5000){
 		 store.commit("SET_TOKEN", res.token);   
     }
-    if (res.code == 50001 || res.code == 50002 || res.code == 50003) {
+    if (info.code == 50001 || info.code == 50002 || info.code == 50003) {
     	   //console.log("error with "+res.code);
     		//console.log("error with "+res.code);
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+        MessageBox.confirm('Вы вышли из системы, вы можете отменить, чтобы остаться на странице или перейти на страницу авторизации', 'Confirm logout', {
           confirmButtonText: 'Re-Login',
           cancelButtonText: 'Cancel',
           type: 'warning'

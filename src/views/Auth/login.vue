@@ -76,7 +76,7 @@ export default {
     return {
       loginForm: {
         	login: 'admin',
-        	password: 'admin465',
+        	password: '',
         action: 'login',
         path: '/Login'
       },
@@ -120,7 +120,6 @@ export default {
 	    		this.loading = true;
 	          this.$store.dispatch('login', this.loginForm)
 	            .then(() => {
-	              console.log("login yes");
 	              this.$router.push({ name: 'Interfaces', query: this.otherQuery })
 	              this.loading = false
 	            })

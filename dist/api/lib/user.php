@@ -89,9 +89,11 @@
 			while($dataline = trim(fgets($fuserData))){	
 				if($i==$indx){
 					$this->userdata = $data;
+					fclose($fuserData);
 					return true;
 					}		
 				}
+			fclose($fuserData);
 			return false;
 		}
 		
