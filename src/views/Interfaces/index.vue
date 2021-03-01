@@ -4,7 +4,7 @@
 		</div>	  
 	  <div class='InterfaceContainer'>
 	    <div v-for="(i, index) in interfaces">
-			 <InterfaceBlock :key="i.name" :indx="i.indx" :isCollapsed="(index>0)?true:false" v-bind:iData="i" v-bind:iName="i.name" v-bind:allInterfaces="getInterfaces()" v-if="isEnabled(i)">{{i.name}}</InterfaceBlock>   	    
+			 <InterfaceBlock :key="i.name" :isNew="i.isNew" :indx="i.indx" :isCollapsed="(index>0)?true:false" v-bind:iData="i" v-bind:iName="i.name" v-bind:allInterfaces="getInterfaces()" v-if="isEnabled(i)">{{i.name}}</InterfaceBlock>   	    
 	    </div>
 	  </div>
   </div>
@@ -44,9 +44,10 @@ export default {
 			this.$forceUpdate();		
   		},
   		changeInterface(changeObj){
-  				console.log("interfaces", this.interfaces);
-  				console.log("newInterface", changeObj.newInterface);
-  				console.log("oldIntarface", changeObj.oldInterface);
+  				if(this.interfaces.hasOwnProperty(changeObj.newInterface) && changeObj.isNew===true)
+  					return false;
+  				else if(changeObj.isNew===true)
+  					return true;
 				let tmp = this.interfaces[changeObj.newInterface];
 				this.interfaces[changeObj.newInterface] = this.interfaces[changeObj.oldInterface];
 				this.interfaces[changeObj.oldInterface] = tmp;
@@ -68,7 +69,6 @@ export default {
 				       .then(function (response) {
 				       	//if(response.error==true) return;
 				       	const {data} = response;
-				       	//console.log(response);
 				       	let k = 1;
 				       	for(var key in data){
 				       		//console.log(key);
@@ -81,7 +81,7 @@ export default {
 				       	//for(var k=0;k<obj.interfaces.length;k++)
 				       		//console.log(obj.interfaces[k]);
 				       	//obj.interfaces = response.data;
-				       	console.log("response", obj.interfaces);
+				       	//console.log("response", obj.interfaces);
 				       	obj.inum = 0;
 				       	for(var i in obj.interfaces)
 								obj.inum++;
@@ -100,8 +100,11 @@ export default {
 					MTU: "",
 					OverrideMAC_address: "",
 					Protocol: "",
+					protocolType: "WAN",
 					Resolv: "",
-					name: "lan"+lanNum+".ini"				
+					name: "lan"+lanNum+".ini",
+					indx: lanNum,
+					isNew: true				
 				});
 				this.$forceUpdate();	
 			}
@@ -121,7 +124,7 @@ export default {
 <style scoped>
 	
 	.InterfaceContainer{
-		margin-top: 30px;	
+		margin-top: 0px;	
 	}	
 	
 		
@@ -131,12 +134,13 @@ export default {
 	}
 	
 	.btn-top{
+		position: relative;
 		text-align: right;
-		height: 30px;
-		top: 0px;
+		height: 20px;
+		top: -75px;
 		font-size: 20px !important;
 		width: 80%;
-		margin-bottom: 15px;
+		margin-bottom: 5px;
 	}
 	
 	.btn-top button{

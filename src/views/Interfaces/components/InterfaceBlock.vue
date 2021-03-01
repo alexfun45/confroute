@@ -94,6 +94,10 @@ export default{
 			},
 			indx:{
 				type: Number			
+			},
+			isNew:{
+				type: Boolean,
+				default: false			
 			}	
 	},
 	created(){
@@ -104,7 +108,7 @@ export default{
 	},
 	mounted(){
 		this.interfacePort = this.iName;
-		console.log("port="+this.iName+" start index="+this.interfaceIndx);
+		console.log("port="+this.iName+" start index="+this.interfaceIndx+" protocol="+this.iData.Protocol);
 		//this.interfaceIndx = this.indx; 
 	},
 	watch:{
@@ -137,15 +141,26 @@ export default{
 	},
 	methods:{
 		changeIndex(item, event){
-			console.log(this.InterfaceIndx);
+			//console.log(this.InterfaceIndx);
 			//this.interfaceIndx = item;
 			//console.log("ints= "+item+" "+this.interfaceIndx);
+			let newIndx = event.target.value;
 			let old = "lan"+item+".ini";
 			this.interfacePort = "lan"+event.target.value+".ini";
-			//if(!this.editMode)
-			//this.interfaceIndx = item;
-			this.$bus.$emit("changeInterface", {newInterface: item-1, oldInterface: this.interfaceIndx-1});
-			
+			let isExists = false;
+			for(let i in this.allInterfaces){
+				if(this.allInterfaces[i].indx==newIndx && newIndx!=item)
+					isExists = true;			
+			}
+			if(isExists){
+				let selectElement = document.getElementById('InterfacesLan');
+				selectElement.options[newIndx-1].selected = false;
+				selectElement.options[newIndx-1].disabled = true;
+				selectElement.options[item-1].selected = true;
+				this.interfaceIndx = item;	
+			}
+			let res = this.$bus.$emit("changeInterface", {newInterface: item-1, oldInterface: this.interfaceIndx-1, isNew: this.isNew});
+			//console.log(this.allInterfaces);
 			//console.log("change index "+item+" "+event.target.value);		
 		},
 		toggleEdit(){
