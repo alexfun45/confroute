@@ -1,7 +1,7 @@
 <template>
 	<div :id="__idinput" class='IpInput'>
 		<template v-for="i in segments">
-			<span class='ipsegment'><input v-on:input="inputIp" :disabled="!disabled" :key="i" :num="i" :id="'ipInput_'+__idinput+'_'+i" v-on:keydown="testChar" v-on:keyup="isEnd" v-bind:maxlength="segmentMaxSize" :placeholder="disabled?placeholder_segments[i-1]:''" v-model="ipsegments[i-1]" type='text'></span><span class='ipseparator' v-if="(separator && i<segments)">-</span>		
+			<span class='ipsegment'><input v-on:input="inputIp" :disabled="!active || disabled" :key="i" :num="i" :id="'ipInput_'+__idinput+'_'+i" v-on:keydown="testChar" v-on:keyup="isEnd" v-bind:maxlength="segmentMaxSize" :placeholder="active?placeholder_segments[i-1]:''" v-model="ipsegments[i-1]" type='text'></span><span class='ipseparator' v-if="(separator && i<segments)">-</span>		
 		</template>	
 	</div>
 </template>
@@ -15,6 +15,10 @@
 			ip: {
 				type: String,
 				default: ""			
+			},
+			active:{
+				type: Boolean,
+				default: false			
 			},
 			disabled:{
 				type: Boolean,
@@ -168,7 +172,13 @@
 		font-weight: 400;
 		color: #333;	
 	}
+	.disabled{
+		color: #444;	
+	}
 	.IpInput .ipseparator{
 		margin: 0px 2px;	
+	}
+	.disable{
+		opacity: 0.1;	
 	}
 </style>

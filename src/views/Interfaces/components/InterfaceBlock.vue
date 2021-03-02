@@ -13,15 +13,15 @@
 					<div class="flexcols">
 						<div class="flex-item">
 							<table class="iptab">
-								<tr><td><label class="itemLabel">IPv4 address</label></td><td><ip-input v-model="ipv4addr" :disabled="editMode" :ip='ipv4addr_placeholder' :segments=4 :segmentMaxSize=3></ip-input></td></tr>
-								<tr><td><label class="itemLabel">IPv4 netmask</label></td><td><ip-input v-model="ipvnetmask" :disabled="editMode" :ip="ipvnetmask_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
-								<tr v-if="protocolType=='WAN'"><td><label class="itemLabel">IPv4 gateway</label></td><td><ip-input v-model="ipv4gateway" :disabled="editMode" :ip="ipv4gateway_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
-								<tr v-if="protocolType=='WAN'"><td><label class="itemLabel">Resolv</label></td><td><ip-input v-model="resolv" :disabled="editMode" :segments=4 :segmentMaxSize=3></ip-input></td></tr>				
-						</table>				
+								<tr :class="{'disabled': isDynamic}"><td><label class="itemLabel">IPv4 address</label></td><td><ip-input v-model="ipv4addr" :disabled="(protocol=='dynamic')" :active="editMode" :ip='ipv4addr_placeholder' :segments=4 :segmentMaxSize=3></ip-input></td></tr>
+								<tr :class="{'disabled': isDynamic}"><td><label class="itemLabel">IPv4 netmask</label></td><td><ip-input v-model="ipvnetmask" :active="editMode" :ip="ipvnetmask_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
+								<tr :class="{'disabled': isDynamic}" v-if="protocolType=='WAN'"><td><label class="itemLabel">IPv4 gateway</label></td><td><ip-input v-model="ipv4gateway" :active="editMode" :ip="ipv4gateway_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
+								<tr v-if="protocolType=='WAN'"><td :class="{'disabled': !static_resolv}"><label class="itemLabel">Resolv</label></td><td><span :class="{'disabled': !static_resolv}"><ip-input v-model="resolv" :active="editMode" :segments=4 :segmentMaxSize=3></ip-input></span><span v-if="isDynamic"><input v-model='static_resolv' type='checkbox'> Static resolv</span></td></tr>										
+						</table> <span></span>				
 						</div>
 						<div class="flex-item">
-							<p class="section-line"><label class="itemLabel">Override MAC address </label><ip-input :disabled="editMode" v-model="overrideMacAddr" :segments=6 allowedregexp="[a-fA-F0-9]" :segmentMaxSize=2></ip-input></p>				
-							<p class="section-line"><label class="itemLabel">MTU </label><ip-input v-model="mtu" :segments=1 :disabled="editMode" :segmentMaxSize=4 :maxNumber=10000></ip-input></p>				
+							<p class="section-line"><label class="itemLabel">Override MAC address </label><ip-input :active="editMode" v-model="overrideMacAddr" :segments=6 allowedregexp="[a-fA-F0-9]" :segmentMaxSize=2></ip-input></p>				
+							<p class="section-line"><label class="itemLabel">MTU </label><ip-input v-model="mtu" :segments=1 :active="editMode" :segmentMaxSize=4 :maxNumber=10000></ip-input></p>				
 						</div>
 					</div>	
 					<div class="btnPanel"><span style="margin-right: 5px;"><el-button type="success" @click="toggleEdit">{{editBtn}}</el-button></span><span><button type="button" @click="delCancelHandler" class="el-button el-button--danger"><span>{{DelCancelBtn}}</span></button></span></div>				
@@ -46,6 +46,7 @@ export default{
          protocol: this.iData.Protocol || "",
          protocolType: this.iData[this.getLanName(this.iName)] || "",
          loading: false,
+         static_resolv: false,
          loader: null,
          mtu: this.iData.MTU || "",
          loading: false,
@@ -102,9 +103,7 @@ export default{
 	},
 	created(){
 		this.interfaceIndx = this.indx;
-		this.__isCollapse = this.isCollapsed;
-		//console.log("indx="+this.indx);
-		
+		this.__isCollapse = this.isCollapsed;		
 	},
 	mounted(){
 		this.interfacePort = this.iName;
@@ -126,6 +125,9 @@ export default{
 		//maxInterfaces(){
 			//return this.$store.getters.getMaxInterfaces;
 		//},
+		isDynamic(){
+			return (this.protocol=='dynamic');		
+		},
 		bgColor: function(){
 			return this.bgColors[this.protocolType];		
 		},
@@ -338,4 +340,7 @@ export default{
     	background-color: #4caf50 !important;
     	border-color: #4caf50 !important;
 		}
+	.disabled{
+		opacity: 0.2;	
+	}
 </style>
