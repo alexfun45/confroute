@@ -43,11 +43,15 @@
 			$confFile = fopen($interfaceFile, "w");
 			fputs($confFile, $data->interfacePort.";".$data->protocolType."\r\n");
 			fputs($confFile, "Protocol;".$data->protocol."\r\n");
-			fputs($confFile, "IPv4 address;".$data->ipv4addr."\r\n");
-			fputs($confFile, "IPv4 netmask;".$data->ipvnetmask."\r\n");
+			if($data->protocol!="dynamic"){
+				fputs($confFile, "IPv4 address;".$data->ipv4addr."\r\n");
+				fputs($confFile, "IPv4 netmask;".$data->ipvnetmask."\r\n");
+				}
 			if($data->protocolType=="WAN"){
-				fputs($confFile, "IPv4 gateway;".$data->ipv4gateway."\r\n");
-				fputs($confFile, "Resolv;".$data->resolv."\r\n");
+				if($data->protocol!="dynamic")
+					fputs($confFile, "IPv4 gateway;".$data->ipv4gateway."\r\n");
+				if($data->protocol!="dynamic" || $data->static_resolv)
+					fputs($confFile, "Resolv;".$data->resolv."\r\n");
 			}
 			fputs($confFile, "Override MAC_address;".$data->overrideMacAddr."\r\n");
 			fputs($confFile, "MTU;".$data->mtu."\r\n");

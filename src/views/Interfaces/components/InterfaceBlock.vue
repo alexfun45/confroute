@@ -16,7 +16,7 @@
 								<tr :class="{'disabled': isDynamic}"><td><label class="itemLabel">IPv4 address</label></td><td><ip-input v-model="ipv4addr" :disabled="(protocol=='dynamic')" :active="editMode" :ip='ipv4addr_placeholder' :segments=4 :segmentMaxSize=3></ip-input></td></tr>
 								<tr :class="{'disabled': isDynamic}"><td><label class="itemLabel">IPv4 netmask</label></td><td><ip-input v-model="ipvnetmask" :active="editMode" :ip="ipvnetmask_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
 								<tr :class="{'disabled': isDynamic}" v-if="protocolType=='WAN'"><td><label class="itemLabel">IPv4 gateway</label></td><td><ip-input v-model="ipv4gateway" :active="editMode" :ip="ipv4gateway_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
-								<tr v-if="protocolType=='WAN'"><td :class="{'disabled': !static_resolv}"><label class="itemLabel">Resolv</label></td><td><span :class="{'disabled': !static_resolv}"><ip-input v-model="resolv" :active="editMode" :segments=4 :segmentMaxSize=3></ip-input></span><span v-if="isDynamic"><input v-model='static_resolv' type='checkbox'> Static resolv</span></td></tr>										
+								<tr v-if="protocolType=='WAN'"><td :class="{'disabled': !static_resolv && protocol=='dynamic'}"><label class="itemLabel">Resolv</label></td><td><span :class="{'disabled': !static_resolv && protocol=='dynamic'}"><ip-input v-model="resolv" :active="editMode" :segments=4 :segmentMaxSize=3></ip-input></span><span v-if="isDynamic"><input v-model='static_resolv' type='checkbox'> Static resolv</span></td></tr>										
 						</table> <span></span>				
 						</div>
 						<div class="flex-item">
@@ -200,7 +200,8 @@ export default{
 				ipv4gateway: this.ipv4gateway,
 				resolv: this.resolv,
 				overrideMacAddr: this.overrideMacAddr,
-				mtu: this.mtu			
+				mtu: this.mtu,
+				static_resolv: this.static_resolv			
 			};
 			let dat = {
 				data: data,
