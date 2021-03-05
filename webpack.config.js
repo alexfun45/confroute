@@ -36,29 +36,46 @@ module.exports = {
         //loader: 'url-loader'
 		//},
       { 
-          test: /\.js$/, 
+         test: /\.js$/, 
        	 exclude: /node_modules/, 
-      	 loader: 'babel-loader',
-      	// use: {
-          	//loader: 'babel-loader'
-        	 //},
-        	 options: {
+      	 //loader: 'babel-loader',
+		 //options: {
+			 //"presets": [ ["@babel/preset-env"]],
+			 //"presets": [
+				//["@babel/preset-env"]
+			//],
+			//plugins: ['dynamic-import-node', 'transform-class-properties', "@babel/transform-runtime"]
+			//},
+		 use: {
+          	loader: 'babel-loader'
+		 },
+		 /*use: {
+          	loader: 'babel-loader',
+			options:{
+				presets: ["@babel/preset-env"],
+				plugins: [
+                        //require("@babel/plugin-transform-async-to-generator"),
+                        ["@babel/plugin-transform-arrow-functions"],
+                        ["@babel/plugin-transform-modules-commonjs"]
+                    ]
+				//plugins: [["dynamic-import-node"], ["@babel/plugin-transform-arrow-functions",  {"spec": false }]]
+			}
+        	 },*/
+        	 /*options: {
             presets: [
             	['@babel/preset-env', 
             	{
 				      "targets": {
-				        "browsers": ["last 2 versions", "safari >= 5"]
+				        "browsers": ["last 1 versions", "safari >= 5"]
 				      }
 				   }
             	]
             	],
-            plugins: [
-            //require("@babel/plugin-transform-arrow-functions"),
-            '@babel/transform-arrow-functions']
-       	  },
+            
+       	  },*/
       	 //options: {
-          	//presets: ['@babel/preset-env'],
-          	//plugins: ["@babel/plugin-transform-arrow-functions"]
+          	//presets: [ ['@babel/preset-env', { targets: {"browsers":[  "> 1%"]} }] ],
+          	//plugins: ['dynamic-import-node', "transform-es2015-arrow-functions"]
         //} 
      },
       { test: /\.vue$/, loader: 'vue-loader' },
@@ -84,6 +101,6 @@ module.exports = {
 				        from: path.resolve(__dirname, 'src/assets/'),
 				        to: path.resolve(__dirname, 'dist/assets/')		
 			        }]
-		        )	
+		        )
   ]
 }

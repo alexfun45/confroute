@@ -10,24 +10,60 @@
     "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },
+  "browserslist": [
+    "chrome >= 66",
+    "firefox >= 50",
+    "safari >= 5",
+    "edge >= 41",
+    "ios >= 6",
+    "ie>=11"
+  ],
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": "> 99.5%, not dead"
+        }
+      ]
+    ],
+    "plugins": [
+      "dynamic-import-node",
+      "babel-plugin-transform-remove-undefined"
+    ]
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.12.10",
+    "@babel/cli": "^7.13.0",
+    "@babel/core": "^7.13.8",
     "@babel/plugin-transform-arrow-functions": "^7.12.13",
-    "@babel/preset-env": "^7.12.11",
+    "@babel/plugin-transform-modules-commonjs": "^7.13.8",
+    "@babel/plugin-transform-reserved-words": "^7.12.13",
+    "@babel/plugin-transform-runtime": "^7.13.9",
+    "@babel/preset-env": "^7.13.9",
     "@nuxtjs/vuetify": "^1.11.3",
     "@vue/babel-preset-app": "^4.5.11",
+    "@vue/cli-plugin-babel": "^4.5.11",
+    "babel-cli": "^6.26.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-dynamic-import-node": "^2.3.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-remove-undefined": "^0.5.0",
+    "babel-plugin-transform-undefined-to-void": "^6.9.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es3": "^1.0.1",
     "copy-webpack-plugin": "^5.1.2",
     "deepmerge": "^1.5.2",
     "fibers": "^5.0.0",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^4.5.1",
+    "remove-strict-webpack-plugin": "^0.1.2",
     "sass": "^1.32.6",
     "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
     "typescript": "^4.1.3",
+    "url-loader": "^4.1.1",
     "vue": "^2.6.12",
     "vue-cli": "^2.9.6",
     "vue-loader": "^15.9.6",
@@ -37,18 +73,13 @@
     "webpack-cli": "^4.4.0"
   },
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.12.15",
     "@babel/polyfill": "^7.12.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
-    "@vue/cli-plugin-babel": "^4.5.11",
     "axios": "^0.21.1",
     "element-ui": "^2.15.0",
-    "file-loader": "^6.2.0",
     "font-awesome": "^4.7.0",
-    "jquery": "^3.5.1",
     "js-cookie": "^2.2.1",
-    "url-loader": "^4.1.1",
     "vue-cookies": "^1.7.4",
     "vue-image-upload-resize": "^2.3.0",
     "vue-router": "^3.5.1",

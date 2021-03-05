@@ -13,9 +13,9 @@
 					<div class="flexcols">
 						<div class="flex-item">
 							<table class="iptab">
-								<tr :class="{'disabled': isDynamic}"><td><label class="itemLabel">IPv4 address</label></td><td><ip-input v-model="ipv4addr" :disabled="(protocol=='dynamic')" :active="editMode" :ip='ipv4addr_placeholder' :segments=4 :segmentMaxSize=3></ip-input></td></tr>
-								<tr :class="{'disabled': isDynamic}"><td><label class="itemLabel">IPv4 netmask</label></td><td><ip-input v-model="ipvnetmask" :active="editMode" :ip="ipvnetmask_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
-								<tr :class="{'disabled': isDynamic}" v-if="protocolType=='WAN'"><td><label class="itemLabel">IPv4 gateway</label></td><td><ip-input v-model="ipv4gateway" :active="editMode" :ip="ipv4gateway_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
+								<tr :class="{'disabled':isDynamic}"><td><label class="itemLabel">IPv4 address</label></td><td><ip-input v-model="ipv4addr" :disabled="(protocol=='dynamic')" :active="editMode" :ip='ipv4addr_placeholder' :segments=4 :segmentMaxSize=3></ip-input></td></tr>
+								<tr :class="{'disabled':isDynamic}"><td><label class="itemLabel">IPv4 netmask</label></td><td><ip-input v-model="ipvnetmask" :active="editMode" :ip="ipvnetmask_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
+								<tr :class="{'disabled':isDynamic}" v-if="protocolType=='WAN'"><td><label class="itemLabel">IPv4 gateway</label></td><td><ip-input v-model="ipv4gateway" :active="editMode" :ip="ipv4gateway_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
 								<tr v-if="protocolType=='WAN'"><td :class="{'disabled': !static_resolv && protocol=='dynamic'}"><label class="itemLabel">Resolv</label></td><td><span :class="{'disabled': !static_resolv && protocol=='dynamic'}"><ip-input v-model="resolv" :active="editMode" :segments=4 :segmentMaxSize=3></ip-input></span><span v-if="isDynamic"><input v-model='static_resolv' type='checkbox'> Static resolv</span></td></tr>										
 						</table> <span></span>				
 						</div>
@@ -107,7 +107,7 @@ export default{
 	},
 	mounted(){
 		this.interfacePort = this.iName;
-		console.log("port="+this.iName+" start index="+this.interfaceIndx+" protocol="+this.iData.Protocol);
+		//console.log("port="+this.iName+" start index="+this.interfaceIndx+" protocol="+this.iData.Protocol);
 		//this.interfaceIndx = this.indx; 
 	},
 	watch:{
@@ -201,15 +201,17 @@ export default{
 				resolv: this.resolv,
 				overrideMacAddr: this.overrideMacAddr,
 				mtu: this.mtu,
-				static_resolv: this.static_resolv			
+				static_resolv: this.static_resolv,
+				isNew: this.isNew			
 			};
 			let dat = {
 				data: data,
 				path: this.$router.currentRoute.fullPath,
 				action: "saveInterface"			
 			}
-			//this.$http.post("./dist/api/api.php", JSON.stringify({ data: data, path: this.$router.currentRoute.fullPath, action: "saveInterface" }));
-			this.$request({method: 'post', data: dat})			
+			this.$request({method: 'post', data: dat})
+			if(this.isNew===true)
+				this.isNew = false;			
 			const loading = this.$loading({
           lock: true,
           text: 'Loading',

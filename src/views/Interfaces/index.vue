@@ -38,7 +38,8 @@ export default {
 			let req = { path: this.$router.currentRoute.fullPath, action: "deleteInterface", data: {iName: __interface.name}};	
 			//console.log(__interface);		
 			this.$request({method: 'post', data: req})
-			this.interfaces.splice(__interface.index, 1);
+			//console.log(this.interfaces); 
+			this.interfaces.splice(__interface.index-1, 1);
 			//console.log(this.interfaces); 
 			//delete this.interfaces[interfaceName]; 
 			this.$forceUpdate();		

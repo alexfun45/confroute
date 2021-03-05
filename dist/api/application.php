@@ -8,11 +8,18 @@
 		var $action = '';
 		var $modName = '';
 		var $data;	
+		var $log_action = array("deleteInterface", "saveInterface");
 		
 		private function getTokenFromHeaders(){
 			$headers = getallheaders();
 			return $headers["X-Token"];		
 		}	
+		
+		private function synonim($action, $data){
+			if($action=="saveInterface" && $data->isNew==true)
+				return "addInterface";
+			return $action;		
+		}
 		
 		private function verify_token(){
 			if(($this->action=="login" || $this->action=="refreshToken"))
@@ -58,9 +65,19 @@
 			//echo $this->action;
 			$module = new $this->modName($this->action, $this->path);
 			$res = $module->action($this->data);
-			//$res["code"] = tokenHandler::$code;
+			if(in_array($this->action, $this->log_action))
+				$this->addToLog($this->action,$this->data);
 			echo json_encode(array("data"=>$res, "reqInfo"=>tokenHandler::getRequestInfo()));	
 		}	
+		
+		private function addToLog($actionName, $data){
+			$actionName = $this->synonim($actionName, $data);
+			$_t = date("H:i:s");
+			$user = $_SESSION['login'];
+			$fLog = fopen(LOG . "log_" . date("d-m-y"), "a");
+			fputs($fLog, $_t." ".$user." ".$actionName."\r\n");
+			fclose($fLog);		
+		}		
 		
 		public static function autoload($className){
 			 $_lastLoadedFilename = "./modules/" . $className . ".php";

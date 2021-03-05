@@ -33,6 +33,7 @@
 				tokenHandler::setNewRefreshToken($jwt);
 				//$id = tokenHandler::verify_token($jwt);
 				//http_response_code(200);
+				$_SESSION['login'] = $login;
 				tokenHandler::setCode(500);
 			   return array(
 			            "message" => "Успешный вход в систему",
