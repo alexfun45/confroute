@@ -52,7 +52,7 @@ export default {
 				let tmp = this.interfaces[changeObj.newInterface];
 				this.interfaces[changeObj.newInterface] = this.interfaces[changeObj.oldInterface];
 				this.interfaces[changeObj.oldInterface] = tmp;
-				this.$forceUpdate();		
+				this.$forceUpdate();	
   		},
   		//getColorByProtocolType(interfaceObject){
   			//if(!interfaceObject.hasOwnProperty(''))
@@ -68,21 +68,14 @@ export default {
 			let req = { path: this.$router.currentRoute.fullPath, action: "getInterfaces" };
 			this.$request({method: 'post', data: req})
 				       .then(function (response) {
-				       	//if(response.error==true) return;
 				       	const {data} = response;
 				       	let k = 1;
 				       	for(var key in data){
-				       		//console.log(key);
 				       		data[key].name = key;
 				       		data[key].indx = k;
 				       		obj.interfaces.push(data[key]);
 				       		k++;
-				       		//console.log(obj.interfaces);
 				       		}
-				       	//for(var k=0;k<obj.interfaces.length;k++)
-				       		//console.log(obj.interfaces[k]);
-				       	//obj.interfaces = response.data;
-				       	//console.log("response", obj.interfaces);
 				       	obj.inum = 0;
 				       	for(var i in obj.interfaces)
 								obj.inum++;

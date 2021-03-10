@@ -128,7 +128,7 @@ const getters = {
   authStatus: state => state.status,
   token: state => state.token,
   avatar: state => state.avatar,
-  login: state => { console.log("call getter login with login = "+state.login); return state.login }
+  login: state => { return state.login }
 }
 
 export default {

@@ -20,7 +20,7 @@
 						</table> <span></span>				
 						</div>
 						<div class="flex-item">
-							<p class="section-line"><label class="itemLabel">Override MAC address </label><ip-input :active="editMode" v-model="overrideMacAddr" :segments=6 allowedregexp="[a-fA-F0-9]" :segmentMaxSize=2></ip-input></p>				
+							<p class="section-line"><label class="itemLabel">Override MAC address </label><ip-input :active="editMode" v-model="macOverride" :segments=6 allowedregexp="[a-fA-F0-9]" :segmentMaxSize=2></ip-input></p>				
 							<p class="section-line"><label class="itemLabel">MTU </label><ip-input v-model="mtu" :segments=1 :active="editMode" :segmentMaxSize=4 :maxNumber=10000></ip-input></p>				
 						</div>
 					</div>	
@@ -54,7 +54,7 @@ export default{
          ipv4gateway: this.iData.IPv4gateway || "",
          ipv4gateway_placeholder: "10.10.0.1",
          resolv: this.iData.Resolv || "",
-         overrideMacAddr: this.iData.OverrideMAC_address || "",
+         overrideMacAddr: '',
 			protocols: [{title:'Static adress', val: 'static'}, {title: 'Dynamic address', val: 'dynamic'}],
 			currentColor: null,
 			editMode: false,
@@ -80,7 +80,7 @@ export default{
 					mtu: '',
 					ipv4gateway: '',
 					resolv: '',
-					overrideMacAddr: ''									
+					OverrideMAC_address: ''									
 				}
 			},
 			iName:{
@@ -103,16 +103,24 @@ export default{
 	},
 	created(){
 		this.interfaceIndx = this.indx;
-		this.__isCollapse = this.isCollapsed;		
+		this.__isCollapse = this.isCollapsed;
+		this.lanName = this.getLanName(this.iName).toLowerCase();
+		//if(this.iData.OverrideMAC_address=="" || !this.iData.OverrideMAC_address)
+			//this.overrideMacAddr = this.$store.getters.getDefaultMacAddress(this.lanName);
+		//else
+			//this.overrideMacAddr = this.iData.overrideMacAddr;
+		//console.log(this.iData.OverrideMAC_address=="");
+		
 	},
 	mounted(){
 		this.interfacePort = this.iName;
-		//console.log("port="+this.iName+" start index="+this.interfaceIndx+" protocol="+this.iData.Protocol);
-		//this.interfaceIndx = this.indx; 
+		
 	},
 	watch:{
 		interfaceIndx: function(val, oldVal){
-			//console.log("interfaces="+val+" "+oldVal);
+			this.overrideMacAddr = this.$store.getters.getDefaultMacAddress("lan"+val);
+			//this.macOverride = this.$store.getters.getDefaultMacAddress("lan"+val);
+			//console.log("macOverride="+this.overrideMacAddr);
 			//if(this.changeNum>0){
 				//console.log("change");
 			//if(!this.editMode)
@@ -122,6 +130,23 @@ export default{
 		}	
 	},
 	computed: {
+		macOverride:{
+			set: function(val){
+				this.overrideMacAddr = val;
+			},
+			get: function(){
+				let interfaceName = "lan"+this.interfaceIndx;
+				console.log("get "+this.iData.OverrideMAC_address);
+				if(this.iData.OverrideMAC_address==""){
+					//console.log("yes mac address "+this.$store.getters.getDefaultMacAddress(interfaceName));
+					return this.$store.getters.getDefaultMacAddress(interfaceName);
+					}
+				else if(this.overrideMacAddr=="")
+					return this.iData.OverrideMAC_address;
+				else
+					return this.overrideMacAddr;	
+			}	
+		},
 		//maxInterfaces(){
 			//return this.$store.getters.getMaxInterfaces;
 		//},
@@ -150,6 +175,7 @@ export default{
 			let old = "lan"+item+".ini";
 			this.interfacePort = "lan"+event.target.value+".ini";
 			let isExists = false;
+			this.macOverride = this.$store.getters.getDefaultMacAddress("lan"+newIndx);
 			for(let i in this.allInterfaces){
 				if(this.allInterfaces[i].indx==newIndx && newIndx!=item)
 					isExists = true;			
@@ -190,6 +216,7 @@ export default{
         });
 			},
 		save(){
+			let obj = this;
 			let data = {
 				interfaceFile: this.interfacePort,
 				interfacePort: this.getLanName(this.interfacePort),
@@ -199,7 +226,7 @@ export default{
 				ipvnetmask: this.ipvnetmask,
 				ipv4gateway: this.ipv4gateway,
 				resolv: this.resolv,
-				overrideMacAddr: this.overrideMacAddr,
+				overrideMacAddr: this.macOverride,
 				mtu: this.mtu,
 				static_resolv: this.static_resolv,
 				isNew: this.isNew			
@@ -218,6 +245,8 @@ export default{
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)'
         });
+        //if(this.macOverride=='')
+        	//this.macOverride = this.$store.getters.getDefaultMacAddress(this.lanName);
         setTimeout(() => {
           loading.close();
         }, 2000);

@@ -8,7 +8,6 @@ import {bus} from './utils/bus'
 import store from './store'
 import Axios from 'axios'
 import VueCookies from 'vue-cookies'
-//import $ from 'jquery'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import enLang from 'element-ui/lib/locale/lang/en'
@@ -21,7 +20,6 @@ Vue.use(Element, {
   locale: enLang
 })
 Vue.prototype.$http = Axios;
-//Vue.prototype.$ = $;
 Vue.prototype.$bus = bus;
 Vue.use(VueCookies)
 Vue.prototype.$cookies = VueCookies;

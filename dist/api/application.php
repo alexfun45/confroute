@@ -48,8 +48,10 @@
 			//Validator::cleanAll($reqData);
 			if(array_key_exists("data", $reqData))
 				$this->data = $reqData->data;
-			$this->data->login = $reqData->login;
-			$this->data->password = $reqData->password;
+			if(($this->action=="login" || $this->action=="refreshToken")){
+				$this->data->login = $reqData->login;
+				$this->data->password = $reqData->password;
+			}
 			$this->modName = array_pop(explode("/", $this->path));
 			return true;
 		}		
@@ -70,12 +72,23 @@
 			echo json_encode(array("data"=>$res, "reqInfo"=>tokenHandler::getRequestInfo()));	
 		}	
 		
+		private function getActionData(){
+			switch($this->action){
+				case 'saveInterface':
+				case 'addInterface':
+				case 'deleteInterface':
+					return $this->path."/".$this->data->interfaceFile;
+							
+			}		
+		}
+		
 		private function addToLog($actionName, $data){
 			$actionName = $this->synonim($actionName, $data);
+			$logData = $this->getActionData();
 			$_t = date("H:i:s");
 			$user = $_SESSION['login'];
 			$fLog = fopen(LOG . "log_" . date("d-m-y"), "a");
-			fputs($fLog, $_t." ".$user." ".$actionName."\r\n");
+			fputs($fLog, $_t." ".$user." ".$actionName." ".$logData."\r\n");
 			fclose($fLog);		
 		}		
 		

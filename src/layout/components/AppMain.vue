@@ -40,7 +40,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-main{
-  min-height: calc(100vh - 50px);
+  min-height: calc(100vh - 215px);
   width: calc(100% - 370);
   margin-left: 370px;
   position: relative;

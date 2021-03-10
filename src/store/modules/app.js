@@ -28,7 +28,8 @@ const actions = {
 }
 
 const getters = {
-	getMaxInterfaces: state => state.config.max_interfaces
+	getMaxInterfaces: state => state.config.max_interfaces,
+	getDefaultMacAddress: state => lanName => { return state.config[lanName].replace(/:/g,"."); }
 	}
 
 export default {

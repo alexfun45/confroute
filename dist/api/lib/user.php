@@ -1,7 +1,8 @@
 <?php
 	class User{
 		
-		var $dataIndex = array("password"=>0, "name"=>1, "surname"=>2, "lastname"=>3, "email"=>4);	
+		var $dataIndex = array("password"=>0, "name"=>1, "surname"=>2, "lastname"=>3, "email"=>4, "login"=>5, "usertype"=>6);
+		var $publicFields = array("name"=>1, "surname"=>2, "lastname"=>3, "email"=>4, "login"=>5, "usertype"=>6);	
 		var $index = null;
 		var $_salt = 'fewf123f';
 		function __construct(){
@@ -88,6 +89,7 @@
 			$i = 0;
 			while($dataline = trim(fgets($fuserData))){	
 				if($i==$indx){
+					$data = explode(";", $dataline);
 					$this->userdata = $data;
 					fclose($fuserData);
 					return true;
@@ -121,6 +123,68 @@
 				}
 				$i++;
 			}
+		}
+		
+		public function getUsers(){
+			$fuserData = fopen(DB."userdata.txt", "r");
+			$users = array();
+			$i = 0;
+			while($dataline = trim(fgets($fuserData))){
+				if($dataline=="" || $dataline==null)
+					break;
+				$data = explode(";", $dataline);
+				foreach($this->dataIndex as $key=>$val){
+					$users[$i][$key] = $data[$val];				
+				}
+				$i++;
+			}
+			fclose($fuserData);
+			return $users;		
+		}
+		
+		protected function getConcat($arr){
+			$array = [];
+			foreach($arr as $row) $array[] = $row;
+			return implode(";", $array);		
+		}
+		
+		protected function save($data){
+			$fuserData = fopen(DB."userdata.txt", "w");
+			foreach($data as $line){
+				//$cp = $line;
+				$dataToWrite = $this->getConcat($line) . "\r\n";
+				//echo $dataToWrite."\r\n";
+				fputs($fuserData, $dataToWrite);
+			}
+			fclose($fuserData);	
+		}
+		
+		protected function getConcatObject($obj){
+			$concatStr = "";
+			//foreach($obj as $key=>$val)
+				//$concatStr .= 		
+		}
+		
+		public function editUser($data){
+			$users = $this->getUsers();
+			$fuserData = fopen(DB."userdata.txt", "r");
+			$data->password = $this->getUserData($data->login, "password");
+			//$data->login = $this->getUserData($data->login, "login");
+			$indx = $data->index;
+			unset($data->index);
+			$users[$indx] = $data;
+			//$users[$indx]
+			$this->save($users);
+			//echo $data->password;
+			//$data->password = $this->getUserData("password");
+			$i = 0;
+			return $users;
+			/*while($dataline = trim(fgets($fuserData))){	
+				if($i==($data->index)){	
+				}
+				$i = 0;
+			}*/
+			fclose($fuserData);		
 		}
 		
 		public function verify_password($login, $password){

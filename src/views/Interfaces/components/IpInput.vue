@@ -81,7 +81,8 @@
 				__idinput: 0,
 				ipsegments: [],
 				allowedSymbols: '',
-				placeholder_segments: [],		
+				placeholder_segments: [],
+				data_value: ''		
 			} 		
 		},
 		created() {
@@ -94,9 +95,16 @@
 		},
 		methods: {
 			inputIp(){
-				let fullIP = this.ipsegments.join(".");
+				let isNull = false;
+				if(this.ipsegments.length>1){
+				   for(let i=0;i<this.ipsegments.length;i++){
+				   	isNull+=((this.ipsegments[i]=='')?1:0);		   
+				   	}
+			   }	
+			   //console.log(isNull+" "+this.ipsegments.length);
+				let fullIP = (isNull==(this.ipsegments.length))?'':this.ipsegments.join(".");
 				this.$emit('input', fullIP);
-				this.value = fullIP;		
+				this.data_value = fullIP;
 			},
 			isEnd(event){
 				let __char = event.currentTarget.value;

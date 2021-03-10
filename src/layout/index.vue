@@ -82,45 +82,16 @@
 								to: '/DnsServer',
 								title: 'DNS Server'							
 							}							
+						],
+						Settings:[
+							{
+								href: {path: '/Settings/users'},
+								to: '/users',
+								title: 'Users'							
+							}						
 						]  					
   					},
   					menu:[],
-            	/*menu: [
-                {
-                    href: { path: '/' },
-                    to: '/',
-                    title: 'Network',
-                    icon: 'fa fa-user',
-                    child:[
-							 {
-                         href: '/Network/Interfaces',
-                         title: 'Interfaces',
-                         badge: {
-						 			element:'router-link',
-						 			attributes: {to: "/"}                   
-                    			}
-                      },
-                      {
-                         href: '/Network/FastSetup',
-                         title: 'FastSetup',
-                         badge: {
-						 			element:'router-link',
-						 			attributes: {to: "/"}                   
-                    			}
-                      },                   
-                    ], 
-                	},
-                	{
-                    href: { path: '/Config' },
-                    to: '/config',
-                    title: 'Config',
-                    icon: 'fa fa-circle',
-                    badge: {
-						 	element:'router-link',
-						 	attributes: {to: "/Config"}                    
-                    	}
-                	 },
-            		]*/
             	}
           	},
       computed:{
@@ -139,7 +110,7 @@
 		    	  this.path = this.$router.currentRoute.fullPath;
 		        this.title = to.meta.title || '';
 		        this.currentPath = this.getTopPath();
-		        //console.log("path="+this.path);
+				  this.menu = this.paths[this.currentPath];
 		    },
 		},
       methods:{
@@ -166,7 +137,7 @@
 		    },
       	getFields: (meta) => {
 			  //console.log(meta);
-			  return meta.fields.title; // not sure what you're trying to return exactly
+			  return meta.fields.title;
 			},
 			onToggleSideBar(collapsed){
 				this.withCollapsed = collapsed;			
@@ -175,8 +146,6 @@
       components: {
 		    AppMain,
 		    Navbar,
-		    //RightPanel,
-		    //Settings,
 		    SidebarMenu,
 		    Indicators,
 		    ImageUploader

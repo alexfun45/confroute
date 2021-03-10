@@ -32,9 +32,6 @@ service.interceptors.response.use(
 	response => {
     const res = response.data;
     const info = res.reqInfo;
-    //console.log(response);
-    // if token refresh
-    //console.log(info);
     if(info.code==201){
 		store.commit("SET_TOKEN", info.token);    
     }

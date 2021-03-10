@@ -21,6 +21,19 @@ let router = new Router({
 	      	}
 	      ]
 	    },
+	   {
+	      path: '/Network',
+	      component: Layout,
+	      redirect: '/Network/Interfaces',
+	      children:[
+	      	{
+	      		path: "/Network/Interfaces",
+	      		component: () => import('@/views/Interfaces/index.vue'),
+	      		name: "Interfaces",
+	      		meta: {title: 'Interfaces', requiresAuth: true}
+	      	}
+	      ]
+	    },
      {
       path: '/Network/FastSetup',
       component: Layout,
@@ -36,7 +49,20 @@ let router = new Router({
     },
 	 { 
 	 	path: '/login', 
-	 	component: Login }    
+	 	component: Login},
+	 {
+		path: '/Settings/users',
+		component: Layout,
+		children:[
+      	{
+      		path: "/Settings/users",
+      		component: () => import('@/views/Settings/users.vue'),
+      		name: "users",
+      		meta: {title: 'Users', requiresAuth: true}
+      	}
+      ]
+		
+	 }    
     ]
  });
 if(!store.getters.isLoggedIn) 

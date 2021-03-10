@@ -9,9 +9,9 @@
           <router-link to="/profile/index">
             <el-dropdown-item>Профиль</el-dropdown-item>
           </router-link>
-          <a target="_blank">
+          <router-link to="/Settings/users" v-if="(login=='admin')">
             <el-dropdown-item>Настройки</el-dropdown-item>
-          </a>
+          </router-link>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">Выход</span>
           </el-dropdown-item>
@@ -33,8 +33,7 @@
 	}  
   },
   created(){
-		this.login = this.$store.getters.login;
-		console.log(this.login);  
+		this.login = this.$store.getters.login;  
   },
   methods: {
     toggleSideBar() {
