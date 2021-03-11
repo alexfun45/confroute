@@ -160,9 +160,9 @@ export default {
           surname: [
 				{required: true, message: 'Пожалуйста, введите фамилию'}          
           ],
-          lastname: [
-				{required: true, message: 'Пожалуйста, введите отчество'}          
-          ],
+          //lastname: [
+				//{required: false}          
+          //],
           email: [
 				{required: true, message: 'Пожалуйста, введите email'}          
           ],
