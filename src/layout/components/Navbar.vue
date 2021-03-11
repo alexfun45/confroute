@@ -50,15 +50,16 @@
 .navbar {
   height: 70px;
   cursor: pointer;
+  text-align: center;
   overflow: hidden;
   position: absolute;
-  right: 10px;
+  right: 30px;
   top: 5px;
   background: transparent;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
   }
    .avatar-container {
-      margin-right: 30px;
+     
 
       .avatar-wrapper {
         margin-top: 5px;
@@ -83,6 +84,7 @@
   
   .login-title{
 		color: #FFF;
-		font-size: 16px;  
+		font-size: 16px;
+		text-align: center;  
   }
 </style>

@@ -20,7 +20,16 @@
 		public function editUser(){
 			$user = new User();
 			return $user->editUser($this->data);	
-			//return $this->data;	
 		}	
+		
+		public function removeUser(){
+			$user = new User();
+			$user->removeUser($this->data);		
+		}
+		
+		public function addUser(){
+			$user = new User();
+			$user->addUser($this->data);		
+		}
 	}
 ?>

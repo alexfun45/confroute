@@ -44,6 +44,8 @@
       </template>
    </el-table-column>
   </el-table>
+
+ 
 	
 	<el-dialog title="Создание пользователя" :visible.sync="dialogAddVisible">
 	  <el-form :model="newUser" :rules="rules" ref="ruleForm">
@@ -108,17 +110,40 @@
 	</div>
 </template>
 <script>
+import Vue from 'vue';
 export default {
   name: 'users',
   data(){
    var validateLogin = (rule, value, callback) => {
    	var regexp = /[а-яА-Я]/i;
 		if(regexp.test(value))
-			return callback(new Error('Логин может содержать только символы латиницы'));   
+			return callback(new Error('Логин может содержать только символы латиницы'));
+		else
+			callback();   
     }
+    var  validatePassword = (rule, value, callback) => {
+		   if(value.length<6)
+				return callback(new Error('Пароль должен содержать больше 6 символов'));
+			if(/[^\w\d\!~@#\$%\^\&\*]/.test(value))
+				return callback(new Error('Пароль не может содержать символы кириллицы'));
+			if(!/[0-9]/.test(value))
+				return callback(new Error('Пароль должен содержать хотя бы одну цифру'));
+			if(!/[A-Za-z]/.test(value))
+				return callback(new Error('Пароль должен содержать хотя бы один символ'));
+			callback();
+    }
+    
 	return {
 		users: [],
-		newUser: {},
+		newUser: {
+			login: '',
+			name: '',
+			surname: '',
+			lastname: '',
+			email: '',
+			password: '',
+			usertype:''		
+		},
 		userData: {},
 		dialogEditVisible: false,
 		dialogAddVisible: false,
@@ -126,7 +151,7 @@ export default {
 		rules: {
           login: [
             { required: true, message: 'Пожалуйста, введите логин', trigger: 'blur' },
-            { min: 3, max: 10, message: 'Длина должна быть от 3 до 10 символов', trigger: 'blur' },
+            { min: 3, max: 40, message: 'Длина должна быть от 3 до 40 символов', trigger: 'blur' },
             { validator: validateLogin, trigger: 'blur' }
           ],
           name: [
@@ -136,13 +161,14 @@ export default {
 				{required: true, message: 'Пожалуйста, введите фамилию'}          
           ],
           lastname: [
-				{required: false}          
+				{required: true, message: 'Пожалуйста, введите отчество'}          
           ],
           email: [
 				{required: true, message: 'Пожалуйста, введите email'}          
           ],
           password: [
-				{required: true, message: 'Пожалуйста, введите пароль'}          
+				{required: true, message: 'Пожалуйста, введите пароль'},
+				{validator: validatePassword, trigger: 'blur'}          
           ],
           usertype: [
 				{required: true, message: 'Пожалуйста, введите тип пользователя'}          
@@ -167,16 +193,33 @@ export default {
       	this.dialogEditVisible = true;
       },
       handleDelete(index, row) {
-        
+       let obj = this;
+       this.$confirm('Вы уверены что хотите удалить пользователя?', 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+         obj.users.splice(index, 1);
+        	let req = { path: "/Users", action: "removeUser", data: index};
+          obj.$request({method: 'post', data: req});
+        }).catch(() => {
+                    
+        }); 
       },
       addUser(formName){
-      this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
+      	let obj = this;
+      	this.$refs[formName].validate((valid) => {
+          	if (valid) {
+          		let req = { path: "/Users", action: "addUser", data: obj.newUser};
+          		obj.$request({method: 'post', data: req});
+          		obj.users.push(Vue.util.extend({}, obj.newUser));
+          		obj.$refs[formName].resetFields();
+          		obj.dialogAddVisible = false;
+          		
+          	} else {
+            	console.log('error submit!!');
+            	return false;
+          	}
         });
       },
       saveUser(){
@@ -184,9 +227,7 @@ export default {
 			let user = this.userData;
 			let req = { path: "/Users", action: "editUser", data: this.userData};
 			this.$request({method: 'post', data: req}).then(function (response) {
-				     const {data} = response;
-				     console.log(data);
-				     //obj.users = data;    	
+				     const {data} = response;  	
 				});    
       }
     },

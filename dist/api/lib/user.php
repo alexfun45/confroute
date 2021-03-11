@@ -159,12 +159,32 @@
 			fclose($fuserData);	
 		}
 		
-		protected function getConcatObject($obj){
-			$concatStr = "";
-			//foreach($obj as $key=>$val)
-				//$concatStr .= 		
+		public function addUser($user){
+			$fLogins = fopen(DB."logins.txt", "a");
+			$fuserData = fopen(DB."userdata.txt", "a");
+			$hashPass = hash("sha256", $user->password . $this->_salt);
+			$userRecord = $hashPass.";".$user->name.";".$user->surname.";".$user->lastname.";".$user->email.";".$user->login.";".$user->usertype.PHP_EOL;
+			fputs($fLogins, $user->login.PHP_EOL);
+			fputs($fuserData, $userRecord);
+			fclose($fLogins);
+			fclose($fuserData);		
 		}
 		
+		public function removeUser($index){
+			$logins = file(DB."logins.txt", FILE_IGNORE_NEW_LINES);
+			$userdata = file(DB."userdata.txt", FILE_IGNORE_NEW_LINES);
+			$fLogins = fopen(DB."logins.txt", "w");
+			$fuserData = fopen(DB."userdata.txt", "w");
+			for($i=0;$i<count($logins);$i++){
+				if($i!=$index){
+					fputs($fLogins, trim($logins[$i]).PHP_EOL);
+					fputs($fuserData, trim($userdata[$i]).PHP_EOL);				
+				}			
+			}
+			fclose($fLogins);
+			fclose($fuserData);		
+		}
+				
 		public function editUser($data){
 			$users = $this->getUsers();
 			$fuserData = fopen(DB."userdata.txt", "r");

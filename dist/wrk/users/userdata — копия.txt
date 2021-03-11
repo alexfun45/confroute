@@ -1,2 +1,3 @@
 ﻿09ef398761c46a43f37183d26a8ab89f767fd65e7e098806e083755d52ea785c1;Александр;Иванов;Юрьевич;alexfun45@gmail.com;admin;admin
-111;Иван;Соколов;Викторович;sysop@mail.com;sysop;user
+09ef398761c46a43f37183d26a8ab89f767fd65e7e098806e083755d52ea785c1;Иван;Соколов;Викторович;sysop@mail.com;sysop;user
+a9052a3e7f555e064ba11d7aaf782b0f3eef053f4bc8b12f0ce1f87105aeb0a4;Сергей;Иванов;Иванович;sergey@mail.ru;test;user

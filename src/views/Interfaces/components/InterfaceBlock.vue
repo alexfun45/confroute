@@ -114,19 +114,10 @@ export default{
 	},
 	mounted(){
 		this.interfacePort = this.iName;
-		
 	},
 	watch:{
 		interfaceIndx: function(val, oldVal){
 			this.overrideMacAddr = this.$store.getters.getDefaultMacAddress("lan"+val);
-			//this.macOverride = this.$store.getters.getDefaultMacAddress("lan"+val);
-			//console.log("macOverride="+this.overrideMacAddr);
-			//if(this.changeNum>0){
-				//console.log("change");
-			//if(!this.editMode)
-				//this.$bus.$emit("changeInterface", {newInterface: val, oldInterface: oldVal});
-				//}
-			//this.changeNum++;	
 		}	
 	},
 	computed: {
@@ -147,9 +138,6 @@ export default{
 					return this.overrideMacAddr;	
 			}	
 		},
-		//maxInterfaces(){
-			//return this.$store.getters.getMaxInterfaces;
-		//},
 		isDynamic(){
 			return (this.protocol=='dynamic');		
 		},
@@ -168,9 +156,6 @@ export default{
 	},
 	methods:{
 		changeIndex(item, event){
-			//console.log(this.InterfaceIndx);
-			//this.interfaceIndx = item;
-			//console.log("ints= "+item+" "+this.interfaceIndx);
 			let newIndx = event.target.value;
 			let old = "lan"+item+".ini";
 			this.interfacePort = "lan"+event.target.value+".ini";
@@ -187,9 +172,7 @@ export default{
 				selectElement.options[item-1].selected = true;
 				this.interfaceIndx = item;	
 			}
-			let res = this.$bus.$emit("changeInterface", {newInterface: item-1, oldInterface: this.interfaceIndx-1, isNew: this.isNew});
-			//console.log(this.allInterfaces);
-			//console.log("change index "+item+" "+event.target.value);		
+			let res = this.$bus.$emit("changeInterface", {newInterface: item-1, oldInterface: this.interfaceIndx-1, isNew: this.isNew});	
 		},
 		toggleEdit(){
 			this.editMode = !this.editMode;
@@ -204,7 +187,7 @@ export default{
 				this.delete();	
 		},
 		delete(){
-			this.$confirm('Вы уверены что хотите удалить настройки?', 'Warning', {
+		 this.$confirm('Вы уверены что хотите удалить настройки?', 'Warning', {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
           type: 'warning'
