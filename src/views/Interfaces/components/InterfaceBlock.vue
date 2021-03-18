@@ -5,7 +5,7 @@
 				<div :class="{'interface-block-wrapper': true, collapse: isCollapse}">
 					<div class="sectionBlock">
 						<p class="section-line">
-							<select v-model="interfaceIndx" v-on:change="changeIndex(indx, $event)" class="shortList" id="InterfacesLan"><option :value="n" v-for="n in maxInterfaces">{{("LAN"+n)}}</option></select> <select v-model="protocolType" :disabled="!editMode" class="shortList" id="InterfacesProtocol"><option value="WAN">WAN</option><option value="Local">Local</option></select>				
+							<select v-model="interfaceIndx" v-on:change="changeIndex(indx, $event)" class="shortList" id="InterfacesLan"><option :value="n-1" v-for="n in maxInterfaces">{{("LAN"+(n-1))}}</option></select> <select v-model="protocolType" :disabled="!editMode" class="shortList" id="InterfacesProtocol"><option value="WAN">WAN</option><option value="Local">Local</option></select>				
 						</p>
 						<p class="section-line"><label class="itemLabel">Protocol:</label><select v-model="protocol" :disabled="!editMode"><option :value="protocol.val" v-for="protocol in protocols">{{protocol.title}}</option></select>
 						</p>
@@ -102,7 +102,10 @@ export default{
 			}	
 	},
 	created(){
-		this.interfaceIndx = this.indx;
+		let str = this.iName;
+		str = this.iName.replace("lan", "").replace(".ini", "");
+		this.interfaceIndx = str;
+		console.log("interface="+str);
 		this.__isCollapse = this.isCollapsed;
 		this.lanName = this.getLanName(this.iName).toLowerCase();
 		//if(this.iData.OverrideMAC_address=="" || !this.iData.OverrideMAC_address)

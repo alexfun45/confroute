@@ -76,8 +76,9 @@
 			switch($this->action){
 				case 'saveInterface':
 				case 'addInterface':
-				case 'deleteInterface':
 					return $this->path."/".$this->data->interfaceFile;
+				case 'deleteInterface':
+					return $this->path."/".$this->data->iName;
 							
 			}		
 		}
@@ -88,8 +89,11 @@
 			$_t = date("H:i:s");
 			$user = $_SESSION['login'];
 			$fLog = fopen(LOG . "log_" . date("d-m-y"), "a");
+			$fCommonLog = fopen(LOG . "change.log", "a");
 			fputs($fLog, $_t." ".$user." ".$actionName." ".$logData."\r\n");
-			fclose($fLog);		
+			fputs($fCommonLog, $_t." ".$user." ".$actionName." ".$logData."\r\n");
+			fclose($fLog);
+			fclose($fCommonLog);	
 		}		
 		
 		public static function autoload($className){

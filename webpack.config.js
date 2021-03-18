@@ -20,7 +20,7 @@ module.exports = {
         		 '@': path.resolve(__dirname, 'src'),
             'vue$': 'vue/dist/vue.esm.js'
         },
-        extensions: ['*', '.js', '.vue', '.json']
+        extensions: ['*', '.js', '.vue', '.json', '.ts']
     },
 	module: {
     rules: [
@@ -78,6 +78,19 @@ module.exports = {
           	//plugins: ['dynamic-import-node', "transform-es2015-arrow-functions"]
         //} 
      },
+	 {
+		test: /\.ts$/,
+		exclude: /node_modules/,
+		use: {
+		  loader: "babel-loader",
+		  options: {
+			presets: ['@babel/preset-env', '@babel/preset-typescript'],
+			plugins: [
+					'@babel/plugin-proposal-class-properties'	            
+			]
+		  }
+		}
+	},
       { test: /\.vue$/, loader: 'vue-loader' },
       //{ test: /\.css$/, use: ['style-loader', 'css-loader']},
       {

@@ -36,9 +36,8 @@ export default {
   		removeInterface(__interface){
   			//this.$http.post("./dist/api/api.php", JSON.stringify({ path: this.$router.currentRoute.fullPath, action: "deleteInterface", data: {iName: interfaceName}}));
 			let req = { path: this.$router.currentRoute.fullPath, action: "deleteInterface", data: {iName: __interface.name}};	
-			//console.log(__interface);		
-			this.$request({method: 'post', data: req})
-			//console.log(this.interfaces); 
+			//console.log(req);		
+			this.$request({method: 'post', data: req}) 
 			this.interfaces.splice(__interface.index-1, 1);
 			//console.log(this.interfaces); 
 			//delete this.interfaces[interfaceName]; 
@@ -69,7 +68,7 @@ export default {
 			this.$request({method: 'post', data: req})
 				       .then(function (response) {
 				       	const {data} = response;
-				       	let k = 1;
+				       	let k = 0;
 				       	for(var key in data){
 				       		data[key].name = key;
 				       		data[key].indx = k;
@@ -84,7 +83,6 @@ export default {
 		addBlock(){
 			if(this.inum<=this.maxInterfaces){
 				//this.interfaces["lan"+this.inum+".ini"] = "NULL";
-				this.inum++;
 				let lanNum = this.inum;
 				let keylan = "LAN"+lanNum;
 				this.interfaces.push({
@@ -100,6 +98,7 @@ export default {
 					indx: lanNum,
 					isNew: true				
 				});
+				this.inum++;
 				this.$forceUpdate();	
 			}
 		},
