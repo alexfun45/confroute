@@ -39,12 +39,10 @@
 
 		protected function getShellReturn(){
 			$shellReturned = file_get_contents(LOG."feedback.alert");
+			if($shellReturned!="")
+				unlink(LOG."feedback.alert");
 			$shellReturned = explode(":", $shellReturned);
 			return array("res"=>trim($shellReturned[0]), "message"=>trim($shellReturned[1]));
-		}
-
-		protected function getSaveRes(){
-			return $this->getShellReturn();	
 		}
 		
 		private function saveInterface(){

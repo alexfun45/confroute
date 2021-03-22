@@ -24,7 +24,8 @@
 							<p class="section-line"><label class="itemLabel">MTU </label><ip-input v-model="mtu" :segments=1 :active="editMode" :segmentMaxSize=4 :maxNumber=10000></ip-input></p>				
 						</div>
 					</div>	
-					<div class="btnPanel"><span style="margin-right: 5px;"><el-button type="success" @click="toggleEdit">{{editBtn}}</el-button></span><span><button type="button" @click="delCancelHandler" class="el-button el-button--danger"><span>{{DelCancelBtn}}</span></button></span></div>				
+					<div class="btnPanel"><span :class='{"res_success": res, "res_error": !res}'>{{answer}}</span><span style="margin-right: 5px;"><el-button type="success" @click="toggleEdit">{{editBtn}}</el-button></span><span><button type="button" @click="delCancelHandler" class="el-button el-button--danger"><span>{{DelCancelBtn}}</span></button></span></div>
+						
 			</div>
 			
 			</div>
@@ -37,23 +38,25 @@ export default{
 	name: "InterfaceBlock",
 	data: function() {
 		return {
+			answer: '',
+			res: true,
 			maxInterfaces: parseInt(this.$store.getters.getMaxInterfaces),
 			ipv4addr_placeholder: "127.0.0.1",
-         ipv4addr: this.iData.IPv4address || "",
-         ipvnetmask: this.iData.IPv4netmask || "",
-         interfacePort: '',
-         interfaceIndx: 0,
-         protocol: this.iData.Protocol || "",
-         protocolType: this.iData[this.getLanName(this.iName)] || "",
-         loading: false,
-         static_resolv: false,
-         loader: null,
-         mtu: this.iData.MTU || "",
-         loading: false,
-         ipvnetmask_placeholder: "255.255.255.0",
-         ipv4gateway: this.iData.IPv4gateway || "",
-         ipv4gateway_placeholder: "10.10.0.1",
-         resolv: this.iData.Resolv || "",
+			ipv4addr: this.iData.IPv4address || "",
+			ipvnetmask: this.iData.IPv4netmask || "",
+			interfacePort: '',
+			interfaceIndx: 0,
+			protocol: this.iData.Protocol || "",
+			protocolType: this.iData[this.getLanName(this.iName)] || "",
+			loading: false,
+			static_resolv: false,
+			loader: null,
+			mtu: this.iData.MTU || "",
+			loading: false,
+			ipvnetmask_placeholder: "255.255.255.0",
+			ipv4gateway: this.iData.IPv4gateway || "",
+			ipv4gateway_placeholder: "10.10.0.1",
+			resolv: this.iData.Resolv || "",
          overrideMacAddr: '',
 			protocols: [{title:'Static adress', val: 'static'}, {title: 'Dynamic address', val: 'dynamic'}],
 			currentColor: null,
@@ -151,6 +154,7 @@ export default{
 			return this.isCollapsed;		
 		},
 		editBtn: function(){
+			this.answer = '';
 			return (this.editMode) ? "Save":"Edit"		
 		},
 		DelCancelBtn: function(){
@@ -203,20 +207,12 @@ export default{
 			},
 		getSaveRes(data){
 			if(data!=""){
-					if(data.res=="success"){
-						this.$confirm(data.message, 'Результат сохранения', {
-							confirmButtonText: 'OK',
-							cancelButtonText: '',
-							type: 'success'
-							})
+					this.answer = data.message;
+					this.res = (data.res=="success");
 					}
-					else if(data.res=="error"){
-						this.$confirm(data.message, 'Результат сохранения', {
-							confirmButtonText: 'OK',
-							cancelButtonText: false,
-							type: 'error'
-							})
-					}
+			else{
+				this.answer="";
+				this.res = true;
 			}
 		},
 		save(){
@@ -384,7 +380,8 @@ export default{
 		bottom: 5px;
 		right: 10px;
 		margin-right: 10px;	
-		width: 250px;
+		width: 500px;
+		text-align: right;
 	}
 	.btnPanel > span{
 		display: inline-block;	
@@ -399,5 +396,15 @@ export default{
 		}
 	.disabled{
 		opacity: 0.2;	
+	}
+	.res_success{
+		margin-right: 15px;
+		font-size: 18px;
+		color: green;
+	}
+	.res_error{
+		margin-right: 15px;
+		font-size: 18px;
+		color: red;
 	}
 </style>
