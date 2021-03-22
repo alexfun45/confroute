@@ -201,6 +201,24 @@ export default{
                     
         });
 			},
+		getSaveRes(data){
+			if(data!=""){
+					if(data.res=="success"){
+						this.$confirm(data.message, 'Результат сохранения', {
+							confirmButtonText: 'OK',
+							cancelButtonText: '',
+							type: 'success'
+							})
+					}
+					else if(data.res=="error"){
+						this.$confirm(data.message, 'Результат сохранения', {
+							confirmButtonText: 'OK',
+							cancelButtonText: false,
+							type: 'error'
+							})
+					}
+			}
+		},
 		save(){
 			let obj = this;
 			let data = {
@@ -222,7 +240,28 @@ export default{
 				path: this.$router.currentRoute.fullPath,
 				action: "saveInterface"			
 			}
-			this.$request({method: 'post', data: dat})
+			this.$request({method: 'post', data: dat}).then(response => { 
+				const {data} = response;
+				console.log("data", data);
+				if(data.res!=""){
+					this.getSaveRes(data)
+				}
+				else{
+					 setTimeout(() => { 
+						 console.log("data is ''");
+						let req = {
+							path: "/Network/Interfaces",
+							action: "getShellReturn"
+						}
+						obj.$request({method: 'post', data: req}).then(response => { 
+						const {data} = response;
+						if(data.res!=""){
+							obj.getSaveRes(data);
+							}
+						});	 
+					  	}, 5000);	
+				}
+			});
 			if(this.isNew===true)
 				this.isNew = false;			
 			const loading = this.$loading({
@@ -235,7 +274,7 @@ export default{
         	//this.macOverride = this.$store.getters.getDefaultMacAddress(this.lanName);
         setTimeout(() => {
           loading.close();
-        }, 2000);
+        }, 3000);
 		  
 		},
 		getLanName(name){

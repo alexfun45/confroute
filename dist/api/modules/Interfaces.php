@@ -36,6 +36,16 @@
 			}
 			return $statuses;	
 		}
+
+		protected function getShellReturn(){
+			$shellReturned = file_get_contents(LOG."feedback.alert");
+			$shellReturned = explode(":", $shellReturned);
+			return array("res"=>trim($shellReturned[0]), "message"=>trim($shellReturned[1]));
+		}
+
+		protected function getSaveRes(){
+			return $this->getShellReturn();	
+		}
 		
 		private function saveInterface(){
 			$data = $this->data;
@@ -55,8 +65,9 @@
 			}
 			fputs($confFile, "Override MAC_address;".$data->overrideMacAddr."\r\n");
 			fputs($confFile, "MTU;".$data->mtu."\r\n");
-			fclose($confFile);	
-			echo $data->mtu;
+			fclose($confFile);
+			sleep(3);
+			return $this->getShellReturn();
 		}
 		
 		private function deleteInterface(){

@@ -25,12 +25,11 @@ Vue.use(VueCookies)
 Vue.prototype.$cookies = VueCookies;
 Vue.prototype.$request = request;
 
-const test = new ipUtil();
-let checkIP = "192.168.2.255"; // IP to check and generate the range of IP addresses
-let subnetMask = "255.255.255.0"; // Subnet Mask, you can also write "128.0.0.0/1"
-//let totalIPs2Generate = 1024; // Total number of IPs to generate
-let flag = test.isIpInSubnet(checkIP, subnetMask);
-console.log("Is IP ", checkIP, "within the subnet mask ", subnetMask, " range? ", flag);
+//const test = new ipUtil();
+//let checkIP = "192.168.2.255"; // IP to check and generate the range of IP addresses
+//let subnetMask = "255.255.255.0"; // Subnet Mask, you can also write "128.0.0.0/1"
+//let flag = test.isIpInSubnet(checkIP, subnetMask);
+//console.log("Is IP ", checkIP, "within the subnet mask ", subnetMask, " range? ", flag);
 
 var app = new Vue({
         el: '#app',

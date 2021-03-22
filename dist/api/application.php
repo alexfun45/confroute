@@ -94,7 +94,6 @@
 			fputs($fCommonLog, $_t." ".$user." ".$actionName." ".$logData."\r\n");
 			fclose($fLog);
 			fclose($fCommonLog);
-			echo CONFIG;
 		}		
 		
 		public static function autoload($className){
