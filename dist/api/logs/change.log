@@ -7,3 +7,4 @@
 10:51:19  deleteInterface /Network/Interfaces/
 10:54:21  addInterface /Network/Interfaces/lan1.ini
 18:46:58 admin deleteInterface /Network/Interfaces/lan1.ini
+09:48:47  saveInterface /Network/Interfaces/lan1.ini

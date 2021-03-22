@@ -16,8 +16,8 @@
 		}	
 		
 		private function synonim($action, $data){
-			if($action=="saveInterface" && $data->isNew==true)
-				return "addInterface";
+			//if($action=="saveInterface" && $data->isNew==true)
+				//return "addInterface";
 			return $action;		
 		}
 		
@@ -68,7 +68,7 @@
 			$module = new $this->modName($this->action, $this->path);
 			$res = $module->action($this->data);
 			if(in_array($this->action, $this->log_action))
-				$this->addToLog($this->action,$this->data);
+				$this->addToLog($this->action, $this->data);
 			echo json_encode(array("data"=>$res, "reqInfo"=>tokenHandler::getRequestInfo()));	
 		}	
 		
@@ -93,7 +93,8 @@
 			fputs($fLog, $_t." ".$user." ".$actionName." ".$logData."\r\n");
 			fputs($fCommonLog, $_t." ".$user." ".$actionName." ".$logData."\r\n");
 			fclose($fLog);
-			fclose($fCommonLog);	
+			fclose($fCommonLog);
+			echo CONFIG;
 		}		
 		
 		public static function autoload($className){

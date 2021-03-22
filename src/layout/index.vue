@@ -60,10 +60,10 @@
   					fromLoaded: "none",
   					logoId: (new Date()).getTime(),
   					path: "",
-  					logo: "./dist/assets/logo.png",
+  					logo: "./public/assets/logo.png",
   					isLoaded: false,
   					isLogoLoaded: false,
-  					logoUpload: './dist/assets/defaultlogo.png',
+  					logoUpload: './public/assets/defaultlogo.png',
   					withCollapsed: false,
   					paths:{
 						Network:[

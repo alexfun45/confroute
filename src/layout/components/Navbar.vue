@@ -28,7 +28,7 @@
 		avatar: '',
 		login: '',
 		size: 40,
-		avatarSrc: './dist/assets/profile_logo.jpg',
+		avatarSrc: './public/assets/profile_logo.jpg',
 		circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",	
 	}  
   },
