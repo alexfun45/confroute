@@ -5,7 +5,7 @@
 				<div :class="{'interface-block-wrapper': true, collapse: isCollapse}">
 					<div class="sectionBlock">
 						<p class="section-line">
-							<select v-model="interfaceIndx" v-on:change="changeIndex(indx, $event)" class="shortList" id="InterfacesLan"><option :value="n-1" v-for="n in maxInterfaces">{{("LAN"+(n-1))}}</option></select> <select v-model="protocolType" :disabled="!editMode" class="shortList" id="InterfacesProtocol"><option value="WAN">WAN</option><option value="Local">Local</option></select>				
+							<select v-model="interfaceIndx" :disabled="!editMode" v-on:change="changeIndex(indx, $event)" class="shortList" id="InterfacesLan"><option :value="n-1" v-for="n in maxInterfaces">{{("LAN"+(n-1))}}</option></select> <select v-model="protocolType" :disabled="!editMode" class="shortList" id="InterfacesProtocol"><option value="WAN">WAN</option><option value="Local">Local</option></select>				
 						</p>
 						<p class="section-line"><label class="itemLabel">Protocol:</label><select v-model="protocol" :disabled="!editMode"><option :value="protocol.val" v-for="protocol in protocols">{{protocol.title}}</option></select>
 						</p>
@@ -20,7 +20,7 @@
 						</table> <span></span>				
 						</div>
 						<div class="flex-item">
-							<p class="section-line"><label class="itemLabel">Override MAC address </label><ip-input :active="editMode" v-model="macOverride" :segments=6 allowedregexp="[a-fA-F0-9]" :segmentMaxSize=2></ip-input></p>				
+							<p class="section-line"><label class="itemLabel">Override MAC address </label><ip-input :key="interfaceIndx" :active="editMode" v-model="macOverride" :segments=6 allowedregexp="[a-fA-F0-9]" :segmentMaxSize=2></ip-input></p>				
 							<p class="section-line"><label class="itemLabel">MTU </label><ip-input v-model="mtu" :segments=1 :active="editMode" :segmentMaxSize=4 :maxNumber=10000></ip-input></p>				
 						</div>
 					</div>	
@@ -108,21 +108,16 @@ export default{
 		let str = this.iName;
 		str = this.iName.replace("lan", "").replace(".ini", "");
 		this.interfaceIndx = str;
-		console.log("interface="+str);
 		this.__isCollapse = this.isCollapsed;
 		this.lanName = this.getLanName(this.iName).toLowerCase();
-		//if(this.iData.OverrideMAC_address=="" || !this.iData.OverrideMAC_address)
-			//this.overrideMacAddr = this.$store.getters.getDefaultMacAddress(this.lanName);
-		//else
-			//this.overrideMacAddr = this.iData.overrideMacAddr;
-		//console.log(this.iData.OverrideMAC_address=="");
-		
 	},
 	mounted(){
 		this.interfacePort = this.iName;
 	},
 	watch:{
 		interfaceIndx: function(val, oldVal){
+			let newMac = this.$store.getters.getDefaultMacAddress("lan"+val);
+			this.iData.OverrideMAC_address = newMac;
 			this.overrideMacAddr = this.$store.getters.getDefaultMacAddress("lan"+val);
 		}	
 	},
@@ -133,15 +128,18 @@ export default{
 			},
 			get: function(){
 				let interfaceName = "lan"+this.interfaceIndx;
-				console.log("get "+this.iData.OverrideMAC_address);
-				if(this.iData.OverrideMAC_address==""){
-					//console.log("yes mac address "+this.$store.getters.getDefaultMacAddress(interfaceName));
+				
+				if(this.iData.OverrideMAC_address=="" || this.iData.indx!=this.interfaceIndx){
+					console.log("yes mac address "+this.$store.getters.getDefaultMacAddress(interfaceName));
+					this.overrideMacAddr = this.$store.getters.getDefaultMacAddress(interfaceName);
 					return this.$store.getters.getDefaultMacAddress(interfaceName);
 					}
-				else if(this.overrideMacAddr=="")
+				else if(this.overrideMacAddr==""){
 					return this.iData.OverrideMAC_address;
-				else
-					return this.overrideMacAddr;	
+				}
+				else{
+					return this.overrideMacAddr;
+				}	
 			}	
 		},
 		isDynamic(){
@@ -175,11 +173,9 @@ export default{
 			if(isExists){
 				let selectElement = event.target;
 				selectElement.options[newIndx].selected = false;
-				//selectElement.options[newIndx-1].disabled = true;
 				selectElement.options[item].selected = true;
 				this.interfaceIndx = item;	
 			}
-			//console.log("item="+item+" newIndx="+newIndx);
 			//let res = this.$bus.$emit("changeInterface", {newInterface: item-1, oldInterface: this.interfaceIndx-1, isNew: this.isNew});	
 		},
 		toggleEdit(){
