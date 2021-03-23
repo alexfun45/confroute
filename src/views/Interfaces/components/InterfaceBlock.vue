@@ -181,6 +181,7 @@ export default{
 		toggleEdit(){
 			this.editMode = !this.editMode;
 			this.answer = "";
+			this.$forceUpdate();
 			if(!this.editMode)
 				this.save();
 		},
