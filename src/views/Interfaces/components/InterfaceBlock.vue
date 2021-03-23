@@ -173,16 +173,18 @@ export default{
 					isExists = true;			
 			}
 			if(isExists){
-				let selectElement = document.getElementById('InterfacesLan');
-				selectElement.options[newIndx-1].selected = false;
-				selectElement.options[newIndx-1].disabled = true;
-				selectElement.options[item-1].selected = true;
+				let selectElement = event.target;
+				selectElement.options[newIndx].selected = false;
+				//selectElement.options[newIndx-1].disabled = true;
+				selectElement.options[item].selected = true;
 				this.interfaceIndx = item;	
 			}
-			let res = this.$bus.$emit("changeInterface", {newInterface: item-1, oldInterface: this.interfaceIndx-1, isNew: this.isNew});	
+			//console.log("item="+item+" newIndx="+newIndx);
+			//let res = this.$bus.$emit("changeInterface", {newInterface: item-1, oldInterface: this.interfaceIndx-1, isNew: this.isNew});	
 		},
 		toggleEdit(){
 			this.editMode = !this.editMode;
+			this.answer = "";
 			if(!this.editMode)
 				this.save();
 		},
@@ -200,7 +202,7 @@ export default{
           type: 'warning'
         }).then(() => {
         	 let __interface = {name: this.iName, index: this.indx};
-          this.$bus.$emit("removeInterface", __interface);
+          	 this.$bus.$emit("removeInterface", __interface);
         }).catch(() => {
                     
         });
@@ -238,13 +240,11 @@ export default{
 			}
 			this.$request({method: 'post', data: dat}).then(response => { 
 				const {data} = response;
-				console.log("data", data);
 				if(data.res!=""){
 					this.getSaveRes(data)
 				}
 				else{
-					 setTimeout(() => { 
-						 console.log("data is ''");
+					 setTimeout(() => {
 						let req = {
 							path: "/Network/Interfaces",
 							action: "getShellReturn"

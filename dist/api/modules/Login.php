@@ -34,6 +34,7 @@
 				//$id = tokenHandler::verify_token($jwt);
 				//http_response_code(200);
 				$_SESSION['login'] = $login;
+				setcookie("login", $login, time()+3600*24*7, '/', '', NULL, TRUE );
 				tokenHandler::setCode(500);
 			   return array(
 			            "message" => "Успешный вход в систему",

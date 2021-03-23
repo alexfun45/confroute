@@ -34,13 +34,9 @@ export default {
   },
   methods:{
   		removeInterface(__interface){
-  			//this.$http.post("./dist/api/api.php", JSON.stringify({ path: this.$router.currentRoute.fullPath, action: "deleteInterface", data: {iName: interfaceName}}));
-			let req = { path: this.$router.currentRoute.fullPath, action: "deleteInterface", data: {iName: __interface.name}};	
-			//console.log(req);		
+  			let req = { path: this.$router.currentRoute.fullPath, action: "deleteInterface", data: {iName: __interface.name}};			
 			this.$request({method: 'post', data: req}) 
-			this.interfaces.splice(__interface.index-1, 1);
-			//console.log(this.interfaces); 
-			//delete this.interfaces[interfaceName]; 
+			this.interfaces.splice(__interface.index, 1);
 			this.$forceUpdate();		
   		},
   		changeInterface(changeObj){

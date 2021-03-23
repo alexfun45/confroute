@@ -87,7 +87,7 @@
 			$actionName = $this->synonim($actionName, $data);
 			$logData = $this->getActionData();
 			$_t = date("H:i:s");
-			$user = $_SESSION['login'];
+			$user = $_COOKIE['login'];
 			$fLog = fopen(LOG . "log_" . date("d-m-y"), "a");
 			$fCommonLog = fopen(LOG . "change.log", "a");
 			fputs($fLog, $_t." ".$user." ".$actionName." ".$logData."\r\n");
