@@ -18,7 +18,7 @@ export default {
   data: function() {
     return {
       interfaces: [],
-      inum:0,
+      inum:1,
       num: 0,
       maxInterfaces: 6,
       changeNum: 0
@@ -34,9 +34,9 @@ export default {
   },
   methods:{
   		removeInterface(__interface){
-  			let req = { path: this.$router.currentRoute.fullPath, action: "deleteInterface", data: {iName: __interface.name}};			
+  			let req = { path: this.$router.currentRoute.fullPath, action: "deleteInterface", data: {iName: __interface.name}};
 			this.$request({method: 'post', data: req}) 
-			this.interfaces.splice(__interface.index, 1);
+			this.interfaces.splice(__interface.index-1, 1);
 			this.$forceUpdate();		
   		},
   		changeInterface(changeObj){
@@ -64,14 +64,14 @@ export default {
 			this.$request({method: 'post', data: req})
 				       .then(function (response) {
 				       	const {data} = response;
-				       	let k = 0;
+				       	let k = 1;
 				       	for(var key in data){
 				       		data[key].name = key;
 				       		data[key].indx = k;
 				       		obj.interfaces.push(data[key]);
 				       		k++;
 				       		}
-				       	obj.inum = 0;
+				       	obj.inum = 1;
 				       	for(var i in obj.interfaces)
 								obj.inum++;
 				       });	
@@ -80,7 +80,7 @@ export default {
 			if(this.inum<=this.maxInterfaces){
 				//this.interfaces["lan"+this.inum+".ini"] = "NULL";
 				let lanNum = this.inum;
-				let keylan = "LAN"+lanNum;
+				let keylan = "LAN"+lanNum+1;
 				this.interfaces.push({
 					IPv4address: "",
 					IPv4gateway: "",

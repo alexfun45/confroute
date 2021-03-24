@@ -1,0 +1,3 @@
+12:50:23 admin saveInterface /Network/Interfaces/lan2.ini
+13:05:57 admin saveInterface /Network/Interfaces/lan3.ini
+13:09:09 admin deleteInterface /Network/Interfaces/lan3.ini

@@ -12,7 +12,15 @@
 		}
 		
 		public function getConfig(){
-			$config = parse_ini_file(CONFIG."config.main.ini");
+			$tmp = parse_ini_file(CONFIG."config.main.ini");
+			foreach($tmp as $key=>$val){
+				if(strripos($val, "@")===false)
+					$config[$key] = $val;
+				else{
+					$v = explode("@", $val);
+					$config[$key] = $v[1];
+				}
+			}
 			return array("config"=>$config);
 		}
 	}

@@ -20,7 +20,6 @@ const actions = {
 		request({method: 'post', data: {path: '/Config', action: "getConfig"} })
 		      	.then(response => {
 			        const {data} = response
-			        console.log("load config")
 			        commit('LOAD_CONFIG', data.config);
 			        //resolve()
 		   	});	
@@ -29,7 +28,7 @@ const actions = {
 
 const getters = {
 	getMaxInterfaces: state => state.config.max_interfaces,
-	getDefaultMacAddress: state => lanName => { return state.config[lanName].replace(/:/g,"."); }
+	getDefaultMacAddress: state => lanName => { return (state.config.hasOwnProperty(lanName)) ? state.config[lanName].replace(/:/g,"."):"" }
 	}
 
 export default {

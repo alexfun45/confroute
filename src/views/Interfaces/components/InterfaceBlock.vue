@@ -5,7 +5,7 @@
 				<div :class="{'interface-block-wrapper': true, collapse: isCollapse}">
 					<div class="sectionBlock">
 						<p class="section-line">
-							<select v-model="interfaceIndx" :disabled="!editMode" v-on:change="changeIndex(indx, $event)" class="shortList" id="InterfacesLan"><option :value="n-1" v-for="n in maxInterfaces">{{("LAN"+(n-1))}}</option></select> <select v-model="protocolType" :disabled="!editMode" class="shortList" id="InterfacesProtocol"><option value="WAN">WAN</option><option value="Local">Local</option></select>				
+							<select v-model="interfaceIndx" :disabled="!editMode" v-on:change="changeIndex(indx, $event)" class="shortList" id="InterfacesLan"><option :value="n" v-for="n in maxInterfaces">{{("LAN"+n)}}</option></select> <select v-model="protocolType" :disabled="!editMode" class="shortList" id="InterfacesProtocol"><option value="WAN">WAN</option><option value="Local">Local</option></select>				
 						</p>
 						<p class="section-line"><label class="itemLabel">Protocol:</label><select v-model="protocol" :disabled="!editMode"><option :value="protocol.val" v-for="protocol in protocols">{{protocol.title}}</option></select>
 						</p>
@@ -116,9 +116,10 @@ export default{
 	},
 	watch:{
 		interfaceIndx: function(val, oldVal){
-			let newMac = this.$store.getters.getDefaultMacAddress("lan"+val);
+			//console.log("lan="+val);
+			let newMac = this.$store.getters.getDefaultMacAddress("lan"+(val-1));
 			this.iData.OverrideMAC_address = newMac;
-			this.overrideMacAddr = this.$store.getters.getDefaultMacAddress("lan"+val);
+			this.overrideMacAddr = newMac;
 		}	
 	},
 	computed: {
@@ -128,9 +129,9 @@ export default{
 			},
 			get: function(){
 				let interfaceName = "lan"+this.interfaceIndx;
-				
+				console.log("name="+interfaceName);
 				if(this.iData.OverrideMAC_address=="" || this.iData.indx!=this.interfaceIndx){
-					console.log("yes mac address "+this.$store.getters.getDefaultMacAddress(interfaceName));
+					//console.log("yes mac address "+this.$store.getters.getDefaultMacAddress(interfaceName));
 					this.overrideMacAddr = this.$store.getters.getDefaultMacAddress(interfaceName);
 					return this.$store.getters.getDefaultMacAddress(interfaceName);
 					}
@@ -162,19 +163,20 @@ export default{
 	methods:{
 		changeIndex(item, event){
 			let newIndx = event.target.value;
-			let old = "lan"+item+".ini";
+			let old = item;
 			this.interfacePort = "lan"+event.target.value+".ini";
 			let isExists = false;
 			this.macOverride = this.$store.getters.getDefaultMacAddress("lan"+newIndx);
 			for(let i in this.allInterfaces){
-				if(this.allInterfaces[i].indx==newIndx && newIndx!=item)
+				if(this.allInterfaces[i].indx==newIndx && newIndx!=old)
 					isExists = true;			
 			}
 			if(isExists){
 				let selectElement = event.target;
-				selectElement.options[newIndx].selected = false;
-				selectElement.options[item].selected = true;
-				this.interfaceIndx = item;	
+				selectElement.options[newIndx-1].selected = false;
+				selectElement.options[newIndx-1].disabled = "disabled";
+				selectElement.options[old-1].selected = true;
+				this.interfaceIndx = old;	
 			}
 			//let res = this.$bus.$emit("changeInterface", {newInterface: item-1, oldInterface: this.interfaceIndx-1, isNew: this.isNew});	
 		},

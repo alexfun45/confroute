@@ -1,10 +1,10 @@
-10:02:03  saveInterface /Network/Interfaces/lan1.ini
-10:07:07  saveInterface /Network/Interfaces/lan1.ini
-11:17:23  saveInterface /Network/Interfaces/lan0.ini
-11:41:01  saveInterface /Network/Interfaces/lan0.ini
-12:52:16  saveInterface /Network/Interfaces/lan0.ini
-07:47:21 admin saveInterface /Network/Interfaces/lan0.ini
-07:48:07 admin saveInterface /Network/Interfaces/lan0.ini
+07:08:37  saveInterface /Network/Interfaces/lan0.ini
+07:09:05  saveInterface /Network/Interfaces/lan0.ini
+07:11:42  saveInterface /Network/Interfaces/lan0.ini
+07:19:05  saveInterface /Network/Interfaces/lan0.ini
+07:21:22  saveInterface /Network/Interfaces/lan0.ini
+07:51:05  saveInterface /Network/Interfaces/lan0.ini
+08:02:03 admin saveInterface /Network/Interfaces/lan0.ini
 18:21:56 admin saveInterface /Network/Interfaces/lan0.ini
 18:22:15 admin saveInterface /Network/Interfaces/lan0.ini
 18:22:34 admin saveInterface /Network/Interfaces/lan0.ini
@@ -24,6 +24,3 @@
 18:42:46 admin deleteInterface /Network/Interfaces/lan1.ini
 19:16:51 admin saveInterface /Network/Interfaces/lan0.ini
 19:17:10 admin saveInterface /Network/Interfaces/lan0.ini
-12:50:23 admin saveInterface /Network/Interfaces/lan2.ini
-13:05:57 admin saveInterface /Network/Interfaces/lan3.ini
-13:09:09 admin deleteInterface /Network/Interfaces/lan3.ini
