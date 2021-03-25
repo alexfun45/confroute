@@ -64,6 +64,10 @@
 			fputs($confFile, "Override MAC_address;".$data->overrideMacAddr."\r\n");
 			fputs($confFile, "MTU;".$data->mtu."\r\n");
 			fclose($confFile);
+			if(!$data->isNew){
+				$rewriteInterfaceFile = $interfaceFile = $this->path . DS . $data->changedInterface;
+				file_put_contents($rewriteInterfaceFile, "disabled");
+			}
 			sleep(3);
 			return $this->getShellReturn();
 		}

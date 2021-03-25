@@ -36,7 +36,7 @@ export default {
   		removeInterface(__interface){
   			let req = { path: this.$router.currentRoute.fullPath, action: "deleteInterface", data: {iName: __interface.name}};
 			this.$request({method: 'post', data: req}) 
-			this.interfaces.splice(__interface.index-1, 1);
+			this.interfaces.splice(__interface.index-1, 1);C
 			this.$forceUpdate();		
   		},
   		changeInterface(changeObj){
@@ -67,7 +67,7 @@ export default {
 				       	let k = 1;
 				       	for(var key in data){
 				       		data[key].name = key;
-				       		data[key].indx = k;
+				       		data[key].indx = parseInt(key.replace("lan", "").replace(".ini", ""));
 				       		obj.interfaces.push(data[key]);
 				       		k++;
 				       		}

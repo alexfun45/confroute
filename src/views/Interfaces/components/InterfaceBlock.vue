@@ -39,6 +39,8 @@ export default{
 	data: function() {
 		return {
 			answer: '',
+			changedInterfaceFile: '',
+			indxBeforeEdit: 0,
 			res: true,
 			maxInterfaces: parseInt(this.$store.getters.getMaxInterfaces),
 			ipv4addr_placeholder: "127.0.0.1",
@@ -118,18 +120,20 @@ export default{
 		interfaceIndx: function(val, oldVal){
 			//console.log("lan="+val);
 			let newMac = this.$store.getters.getDefaultMacAddress("lan"+(val-1));
-			this.iData.OverrideMAC_address = newMac;
-			this.overrideMacAddr = newMac;
+			//this.iData.OverrideMAC_address = newMac;
+			//this.overrideMacAddr = newMac;
 		}	
 	},
 	computed: {
+		//lanName: function(){
+
+		//},
 		macOverride:{
 			set: function(val){
 				this.overrideMacAddr = val;
 			},
 			get: function(){
 				let interfaceName = "lan"+this.interfaceIndx;
-				console.log("name="+interfaceName);
 				if(this.iData.OverrideMAC_address=="" || this.iData.indx!=this.interfaceIndx){
 					//console.log("yes mac address "+this.$store.getters.getDefaultMacAddress(interfaceName));
 					this.overrideMacAddr = this.$store.getters.getDefaultMacAddress(interfaceName);
@@ -166,30 +170,42 @@ export default{
 			let old = item;
 			this.interfacePort = "lan"+event.target.value+".ini";
 			let isExists = false;
-			this.macOverride = this.$store.getters.getDefaultMacAddress("lan"+newIndx);
+			console.log("allInterfaces", this.allInterfaces);
 			for(let i in this.allInterfaces){
-				if(this.allInterfaces[i].indx==newIndx && newIndx!=old)
+				if(this.allInterfaces[i].indx==newIndx && newIndx!=old){
+					console.log("allInterfaces[i]="+this.allInterfaces[i].indx+" newIndx="+newIndx);
 					isExists = true;			
+				}
 			}
 			if(isExists){
 				let selectElement = event.target;
 				selectElement.options[newIndx-1].selected = false;
 				selectElement.options[newIndx-1].disabled = "disabled";
 				selectElement.options[old-1].selected = true;
-				this.interfaceIndx = old;	
+				this.interfaceIndx = old;
+				this.macOverride = this.$store.getters.getDefaultMacAddress("lan"+old);
+			}
+			else{
+				this.changedInterfaceFile = "lan"+old+".ini";
+				this.macOverride = this.$store.getters.getDefaultMacAddress("lan"+newIndx);
 			}
 			//let res = this.$bus.$emit("changeInterface", {newInterface: item-1, oldInterface: this.interfaceIndx-1, isNew: this.isNew});	
 		},
 		toggleEdit(){
 			this.editMode = !this.editMode;
 			this.answer = "";
-			this.$forceUpdate();
-			if(!this.editMode)
+			if(!this.editMode){
 				this.save();
+			}
+			else
+				this.indxBeforeEdit = this.interfaceIndx;
+			this.$forceUpdate();
 		},
 		delCancelHandler(){
 			if(this.editMode){
 				this.editMode = false;
+				//console.log("Interface indx before="+this.indxBeforeEdit);
+				this.interfaceIndx = this.indxBeforeEdit;
 				}
 			else
 				this.delete();	
@@ -230,13 +246,16 @@ export default{
 				overrideMacAddr: this.macOverride,
 				mtu: this.mtu,
 				static_resolv: this.static_resolv,
-				isNew: this.isNew			
+				isNew: this.isNew,
+				changedInterface: "lan"+this.indxBeforeEdit+".ini"		
 			};
+			
 			let dat = {
 				data: data,
 				path: this.$router.currentRoute.fullPath,
 				action: "saveInterface"			
 			}
+
 			this.$request({method: 'post', data: dat}).then(response => { 
 				const {data} = response;
 				if(data.res!=""){
