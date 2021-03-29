@@ -170,10 +170,9 @@ export default{
 			let old = item;
 			this.interfacePort = "lan"+event.target.value+".ini";
 			let isExists = false;
-			console.log("allInterfaces", this.allInterfaces);
 			for(let i in this.allInterfaces){
 				if(this.allInterfaces[i].indx==newIndx && newIndx!=old){
-					console.log("allInterfaces[i]="+this.allInterfaces[i].indx+" newIndx="+newIndx);
+					//console.log("allInterfaces[i]="+this.allInterfaces[i].indx+" newIndx="+newIndx);
 					isExists = true;			
 				}
 			}
