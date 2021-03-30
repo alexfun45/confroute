@@ -55,19 +55,36 @@
 				fputs($confFile, "IPv4 address;".$data->ipv4addr."\r\n");
 				fputs($confFile, "IPv4 netmask;".$data->ipvnetmask."\r\n");
 				}
-			if($data->protocolType=="WAN"){
-				if($data->protocol!="dynamic")
+			//if($data->protocolType=="WAN"){
+				//if($data->protocol!="dynamic")
+				if(isset($data->ipv4gateway))
 					fputs($confFile, "IPv4 gateway;".$data->ipv4gateway."\r\n");
-				if($data->protocol!="dynamic" || $data->static_resolv)
-					fputs($confFile, "Resolv;".$data->resolv."\r\n");
-			}
+				//if($data->protocol!="dynamic" || $data->static_resolv)
+				if(isset($data->resolv)){
+					if(($data->protocol!="dynamic" && $data->protocolType=="WAN") || $data->static_resolv)
+						fputs($confFile, "Resolv;".$data->resolv."\r\n");
+					else if($data->protocol=="dynamic" && $data->resolv!="")
+						fputs($confFile, "Resolv;".$data->resolv."\r\n");
+				}
+			//}
 			fputs($confFile, "Override MAC_address;".$data->overrideMacAddr."\r\n");
 			fputs($confFile, "MTU;".$data->mtu."\r\n");
+			if(isset($data->advancedFields)){
+				$str = '';
+				foreach($data->advancedFields as $prop=>$val){
+					$p = array();
+					$str = '';
+					foreach($val as $option=>$oVal){
+						$p[] = $option . ":" . $oVal;
+					}
+					$str = "[" . implode(",", $p) . "]";
+					$str = $prop . ";" . $str;
+					fputs($confFile, $str."\r\n");
+				}
+			}
 			fclose($confFile);
-			
 			if(!$data->isNew && $data->interfaceFile!=$data->changedInterface){
 				$rewriteInterfaceFile = $interfaceFile = $this->path . DS . $data->changedInterface;
-				//echo $data->interfaceFile." ". $data->changedInterface;
 				file_put_contents($rewriteInterfaceFile, "disabled");
 			}
 			sleep(3);

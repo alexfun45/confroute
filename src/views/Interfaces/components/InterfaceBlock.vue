@@ -15,15 +15,19 @@
 							<table class="iptab">
 								<tr :class="{'disabled':isDynamic}"><td><label class="itemLabel">IPv4 address</label></td><td><ip-input v-model="ipv4addr" :disabled="(protocol=='dynamic')" :active="editMode" :ip='ipv4addr_placeholder' :segments=4 :segmentMaxSize=3></ip-input></td></tr>
 								<tr :class="{'disabled':isDynamic}"><td><label class="itemLabel">IPv4 netmask</label></td><td><ip-input v-model="ipvnetmask" :active="editMode" :ip="ipvnetmask_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
-								<tr :class="{'disabled':isDynamic}" v-if="protocolType=='WAN'"><td><label class="itemLabel">IPv4 gateway</label></td><td><ip-input v-model="ipv4gateway" :active="editMode" :ip="ipv4gateway_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
-								<tr v-if="protocolType=='WAN'"><td :class="{'disabled': !static_resolv && protocol=='dynamic'}"><label class="itemLabel">Resolv</label></td><td><span :class="{'disabled': !static_resolv && protocol=='dynamic'}"><ip-input v-model="resolv" :active="editMode" :segments=4 :segmentMaxSize=3></ip-input></span><span v-if="isDynamic"><input v-model='static_resolv' type='checkbox'> Static resolv</span></td></tr>										
+								<tr :class="{'disabled':isDynamic}" v-if="protocolType=='WAN' || ipv4gateway!=''"><td><label class="itemLabel">IPv4 gateway</label></td><td><ip-input v-model="ipv4gateway" :active="editMode" :ip="ipv4gateway_placeholder"  :segments=4 :segmentMaxSize=3></ip-input></td></tr>
+								<tr v-if="(protocolType=='WAN' || resolv!='')"><td :class="{'disabled': !static_resolv && protocol=='dynamic'}"><label class="itemLabel">Resolv</label></td><td><span :class="{'disabled': !static_resolv && protocol=='dynamic'}"><ip-input v-model="resolv" :active="editMode" :segments=4 :segmentMaxSize=3></ip-input></span><span v-if="isDynamic"><input v-model='static_resolv' type='checkbox'> Static resolv</span></td></tr>										
+								<tr v-for="(options, prop) in advancedFields">
+									<td><label class="itemLabel">{{prop}}</label></td>
+									<td><ip-input :active="editMode" v-model="advancedFields[prop].value" :segments=options.num></ip-input></td>
+								</tr>
 						</table> <span></span>				
 						</div>
 						<div class="flex-item">
 							<p class="section-line"><label class="itemLabel">Override MAC address </label><ip-input :key="interfaceIndx" :active="editMode" v-model="macOverride" :segments=6 allowedregexp="[a-fA-F0-9]" :segmentMaxSize=2></ip-input></p>				
 							<p class="section-line"><label class="itemLabel">MTU </label><ip-input v-model="mtu" :segments=1 :active="editMode" :segmentMaxSize=4 :maxNumber=10000></ip-input></p>				
 						</div>
-					</div>	
+					</div>
 					<div class="btnPanel"><span :class='{"res_success": res, "res_error": !res}'>{{answer}}</span><span style="margin-right: 5px;"><el-button type="success" @click="toggleEdit">{{editBtn}}</el-button></span><span><button type="button" @click="delCancelHandler" class="el-button el-button--danger"><span>{{DelCancelBtn}}</span></button></span></div>
 						
 			</div>
@@ -53,13 +57,15 @@ export default{
 			loading: false,
 			static_resolv: false,
 			loader: null,
-			mtu: this.iData.MTU || "",
+			mtu: this.iData.MTU || "1500",
 			loading: false,
 			ipvnetmask_placeholder: "255.255.255.0",
 			ipv4gateway: this.iData.IPv4gateway || "",
 			ipv4gateway_placeholder: "10.10.0.1",
+			advancedOptions:{},
+			advancedFields: {},
 			resolv: this.iData.Resolv || "",
-         overrideMacAddr: '',
+         	overrideMacAddr: '',
 			protocols: [{title:'Static adress', val: 'static'}, {title: 'Dynamic address', val: 'dynamic'}],
 			currentColor: null,
 			editMode: false,
@@ -69,11 +75,19 @@ export default{
 			bgColors: {
 			"WAN": "#d9b9fa",
 			"Local": "#93f3fa",
-			__isCollapse: true     
-      	}	
+			__isCollapse: true ,
+      		},
+			required:{
+				IPv4address: ' ',
+				IPv4netmask: ' ',
+				IPv4gateway: ' ',
+				Resolv: ' ',
+				OverrideMAC_address:' ',
+				Protocol: ' ',
+				MTU: ' '
+			}  	
 		}	
 	},
-	//props: ["iData", "iName", "allInterfaces", "isCollapsed", "indx"],
 	props:{
 		iData: {
 				type: Object,
@@ -112,6 +126,7 @@ export default{
 		this.interfaceIndx = str;
 		this.__isCollapse = this.isCollapsed;
 		this.lanName = this.getLanName(this.iName).toLowerCase();
+		this.setupFields();
 	},
 	mounted(){
 		this.interfacePort = this.iName;
@@ -125,9 +140,6 @@ export default{
 		}	
 	},
 	computed: {
-		//lanName: function(){
-
-		//},
 		macOverride:{
 			set: function(val){
 				this.overrideMacAddr = val;
@@ -165,6 +177,41 @@ export default{
 		}	
 	},
 	methods:{
+		setupFields(){
+			for(let propName in this.iData){
+				// if value of property has declaration in []
+				if(/\[*.?\]/.test(this.iData[propName])){
+					let declarations = this.iData[propName].replace("[", "").replace("]", "");
+					declarations = declarations.split(",");
+					let prop = propName;
+					this.advancedOptions[prop] = {};
+					for(var i=0;i<declarations.length;i++){
+						let options = declarations[i].split(":");
+						if(options.length>1){
+							let optionName = options[0].trim();
+							let optionValue = (optionName=="num") ? parseInt(options[1].trim()):options[1].trim();
+							this.advancedOptions[prop][optionName] = optionValue;
+						}
+						else{
+							let optionName = (i==0) ? "num":"value";
+							this.advancedOptions[prop][optionName] = options[0];
+						}
+					}
+					
+				}
+			}
+			for(let prop in this.advancedOptions){
+				if(!this.required.hasOwnProperty(prop)){
+					this.advancedFields[prop] = this.advancedOptions[prop];
+					if(!this.advancedFields[prop].hasOwnProperty('value'))
+						this.advancedFields[prop].value = this.advancedFields[prop].default;
+				}
+				else{
+					this.$data[prop.toLowerCase()] = this.advancedOptions[prop].value;
+					//this.iData[prop] = this.advancedOptions[prop].value;
+				}
+			}
+		},
 		changeIndex(item, event){
 			let newIndx = event.target.value;
 			let old = item;
@@ -248,6 +295,8 @@ export default{
 				isNew: this.isNew,
 				changedInterface: "lan"+this.indxBeforeEdit+".ini"		
 			};
+			if(Object.keys(this.advancedFields).length != 0)
+				data.advancedFields = this.advancedFields;
 			
 			let dat = {
 				data: data,
