@@ -49,7 +49,9 @@
 			$data = $this->data;
 			$interfaceFile = $this->path . DS . $data->interfaceFile;
 			$confFile = fopen($interfaceFile, "w");
-			fputs($confFile, $data->interfacePort.";".$data->protocolType."\r\n");
+			fputs($confFile,"Interface;".$data->interfacePort."\r\n");
+			fputs($confFile,"ProtocolType;".$data->protocolType."\r\n");
+			//fputs($confFile, $data->interfacePort.";".$data->protocolType."\r\n");
 			fputs($confFile, "Protocol;".$data->protocol."\r\n");
 			if($data->protocol!="dynamic"){
 				fputs($confFile, "IPv4 address;".$data->ipv4addr."\r\n");
@@ -72,13 +74,19 @@
 			if(isset($data->advancedFields)){
 				$str = '';
 				foreach($data->advancedFields as $prop=>$val){
-					$p = array();
-					$str = '';
-					foreach($val as $option=>$oVal){
-						$p[] = $option . ":" . $oVal;
+					if($val->type=="adv_ipinput"){
+						$p = array();
+						$str = '';
+						foreach($val as $option=>$oVal){
+							if($option!="type")
+								$p[] = $option . ":" . $oVal;
+						}
+						$str = "[" . implode(",", $p) . "]";
+						$str = $prop . ";" . $str;
 					}
-					$str = "[" . implode(",", $p) . "]";
-					$str = $prop . ";" . $str;
+					else{
+						$str = $prop . ";" . $val->value;
+ 					}
 					fputs($confFile, $str."\r\n");
 				}
 			}
@@ -90,7 +98,6 @@
 			sleep(3);
 			return $this->getShellReturn();
 		}
-		
 		private function deleteInterface(){
 			$data = $this->data;
 			$interfaceFile = $this->path . DS . $data->iName;

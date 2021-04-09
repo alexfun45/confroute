@@ -19,7 +19,11 @@
 								<tr v-if="(protocolType=='WAN' || resolv!='')"><td :class="{'disabled': !static_resolv && protocol=='dynamic'}"><label class="itemLabel">Resolv</label></td><td><span :class="{'disabled': !static_resolv && protocol=='dynamic'}"><ip-input v-model="resolv" :active="editMode" :segments=4 :segmentMaxSize=3></ip-input></span><span v-if="isDynamic"><input v-model='static_resolv' type='checkbox'> Static resolv</span></td></tr>										
 								<tr v-for="(options, prop) in advancedFields">
 									<td><label class="itemLabel">{{prop}}</label></td>
-									<td><ip-input :active="editMode" v-model="advancedFields[prop].value" :segments=options.num></ip-input></td>
+									<td>
+										<ip-input v-if="advancedFields[prop].type=='adv_ipinput'" :active="editMode" v-model="advancedFields[prop].value" :segments=options.num></ip-input>
+										<input class="inputField" :disabled="!editMode" v-if="advancedFields[prop].type=='text'" type="text" v-model="advancedFields[prop].value">
+										<!--<el-input v-if="advancedFields[prop].type=='text'" placeholder="Please input" v-model="advancedFields[prop].value"></el-input>-->
+									</td>
 								</tr>
 						</table> <span></span>				
 						</div>
@@ -53,7 +57,8 @@ export default{
 			interfacePort: '',
 			interfaceIndx: 0,
 			protocol: this.iData.Protocol || "",
-			protocolType: this.iData[this.getLanName(this.iName)] || "",
+			//protocolType: this.iData[this.getLanName(this.iName)] || "",
+			protocolType: this.iData.ProtocolType || "",
 			loading: false,
 			static_resolv: false,
 			loader: null,
@@ -80,10 +85,14 @@ export default{
 			required:{
 				IPv4address: ' ',
 				IPv4netmask: ' ',
+				name: '',
+				indx:'',
 				IPv4gateway: ' ',
 				Resolv: ' ',
 				OverrideMAC_address:' ',
 				Protocol: ' ',
+				ProtocolType:'',
+				Interface: '',
 				MTU: ' '
 			}  	
 		}	
@@ -95,7 +104,7 @@ export default{
 					ipv4addr: false,
 					ipvnetmask: false,
 					protocol: '',
-					protocolType: '',
+					ProtocolType: '',
 					mtu: '',
 					ipv4gateway: '',
 					resolv: '',
@@ -122,6 +131,7 @@ export default{
 	},
 	created(){
 		let str = this.iName;
+		console.log("protocolType", this.iData);
 		str = this.iName.replace("lan", "").replace(".ini", "");
 		this.interfaceIndx = str;
 		this.__isCollapse = this.isCollapsed;
@@ -177,14 +187,27 @@ export default{
 		}	
 	},
 	methods:{
+		// subtraction obj2 from obj1
+		difference(obj1, obj2){
+			let diffObj = {};
+			for(let key in obj1){
+				if(!obj2.hasOwnProperty(key))
+					diffObj[key] = obj1[key];	
+			}
+			return diffObj;
+		},
 		setupFields(){
+			//let insetFields = this.difference(this.iData, this.required);
+			//console.log("difference", insetFields);
 			for(let propName in this.iData){
+				let val = this.iData[propName];
 				// if value of property has declaration in []
-				if(/\[*.?\]/.test(this.iData[propName])){
+				if(/\[*.?\]/.test(val)){
 					let declarations = this.iData[propName].replace("[", "").replace("]", "");
 					declarations = declarations.split(",");
 					let prop = propName;
 					this.advancedOptions[prop] = {};
+					this.advancedOptions[prop].type = "adv_ipinput";
 					for(var i=0;i<declarations.length;i++){
 						let options = declarations[i].split(":");
 						if(options.length>1){
@@ -197,7 +220,11 @@ export default{
 							this.advancedOptions[prop][optionName] = options[0];
 						}
 					}
-					
+				}
+				else if(!/(\d+\.\d+)+/.test(val)){
+					this.advancedOptions[propName] = {};
+					this.advancedOptions[propName].type = "text";
+					this.advancedOptions[propName].value = val;
 				}
 			}
 			for(let prop in this.advancedOptions){
@@ -297,7 +324,8 @@ export default{
 			};
 			if(Object.keys(this.advancedFields).length != 0)
 				data.advancedFields = this.advancedFields;
-			
+			//console.log(data);
+			//return true;
 			let dat = {
 				data: data,
 				path: this.$router.currentRoute.fullPath,
@@ -472,5 +500,10 @@ export default{
 		margin-right: 15px;
 		font-size: 18px;
 		color: red;
+	}
+	.inputField{
+		width: 250px;
+		height: 25px;
+		font-size: 15px;
 	}
 </style>
