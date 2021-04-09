@@ -74,11 +74,10 @@
 			if(isset($data->advancedFields)){
 				$str = '';
 				foreach($data->advancedFields as $prop=>$val){
-					if($val->type=="adv_ipinput"){
+					if($val->type!="text"){
 						$p = array();
 						$str = '';
 						foreach($val as $option=>$oVal){
-							if($option!="type")
 								$p[] = $option . ":" . $oVal;
 						}
 						$str = "[" . implode(",", $p) . "]";

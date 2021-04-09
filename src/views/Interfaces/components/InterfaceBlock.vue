@@ -20,8 +20,9 @@
 								<tr v-for="(options, prop) in advancedFields">
 									<td><label class="itemLabel">{{prop}}</label></td>
 									<td>
-										<ip-input v-if="advancedFields[prop].type=='adv_ipinput'" :active="editMode" v-model="advancedFields[prop].value" :segments=options.num></ip-input>
-										<input class="inputField" :disabled="!editMode" v-if="advancedFields[prop].type=='text'" type="text" v-model="advancedFields[prop].value">
+										<ip-input v-if="advancedFields[prop].type=='ipinput'" :active="editMode" v-model="advancedFields[prop].value" :segments=options.num></ip-input>
+										<input class="inputField" :disabled="!editMode" v-if="advancedFields[prop].type=='edittext'" type="text" v-model="advancedFields[prop].value">
+										<label class="textfield" v-if="advancedFields[prop].type=='text'">{{advancedFields[prop].value}}</label>
 										<!--<el-input v-if="advancedFields[prop].type=='text'" placeholder="Please input" v-model="advancedFields[prop].value"></el-input>-->
 									</td>
 								</tr>
@@ -207,7 +208,7 @@ export default{
 					declarations = declarations.split(",");
 					let prop = propName;
 					this.advancedOptions[prop] = {};
-					this.advancedOptions[prop].type = "adv_ipinput";
+					//this.advancedOptions[prop].type = "adv_ipinput";
 					for(var i=0;i<declarations.length;i++){
 						let options = declarations[i].split(":");
 						if(options.length>1){
@@ -219,6 +220,12 @@ export default{
 							let optionName = (i==0) ? "num":"value";
 							this.advancedOptions[prop][optionName] = options[0];
 						}
+					}
+					if(!this.advancedOptions[prop].hasOwnProperty("type")){
+						if(/(\d+\.\d+)+/.test(this.advancedOptions[prop].value))
+							this.advancedOptions[prop].type = "ipinput";
+						else
+							this.advancedOptions[prop].type = "edittext";		
 					}
 				}
 				else if(!/(\d+\.\d+)+/.test(val)){
@@ -505,5 +512,9 @@ export default{
 		width: 250px;
 		height: 25px;
 		font-size: 15px;
+	}
+	.textfield{
+		color:#333;
+		font-size: 16px;
 	}
 </style>
