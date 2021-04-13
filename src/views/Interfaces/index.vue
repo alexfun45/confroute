@@ -78,23 +78,31 @@ export default {
 		},
 		addBlock(){
 			if(this.inum<=this.maxInterfaces){
-				//this.interfaces["lan"+this.inum+".ini"] = "NULL";
-				let lanNum = this.inum;
-				let keylan = "LAN"+lanNum+1;
+				let lanNum = 1;
+				for(let i=0;i<this.interfaces.length;i++){
+					if(this.interfaces[i].indx==lanNum)
+						lanNum++;
+				}
 				this.interfaces.push({
 					IPv4address: "",
 					IPv4gateway: "",
 					IPv4netmask: "",
 					MTU: "",
 					OverrideMAC_address: "",
-					Protocol: "",
-					protocolType: "WAN",
+					Protocol: "static",
+					ProtocolType: "WAN",
 					Resolv: "",
 					name: "lan"+lanNum+".ini",
 					indx: lanNum,
 					isNew: true				
 				});
 				this.inum++;
+				function compareInterfaces(a, b) {
+					if (a.indx > b.indx) return 1;
+					if (a.indx == b.indx) return 0;
+					if (a.indx < b.indx) return -1;
+					}
+				this.interfaces.sort(compareInterfaces);
 				this.$forceUpdate();	
 			}
 		},

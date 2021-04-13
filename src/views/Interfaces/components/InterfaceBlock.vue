@@ -88,6 +88,7 @@ export default{
 				IPv4netmask: ' ',
 				name: '',
 				indx:'',
+				isNew: '',
 				IPv4gateway: ' ',
 				Resolv: ' ',
 				OverrideMAC_address:' ',
@@ -132,7 +133,6 @@ export default{
 	},
 	created(){
 		let str = this.iName;
-		console.log("protocolType", this.iData);
 		str = this.iName.replace("lan", "").replace(".ini", "");
 		this.interfaceIndx = str;
 		this.__isCollapse = this.isCollapsed;
